@@ -12,7 +12,7 @@ description: 提交项目并推送到 Gitee 仓库 mmm.git。当用户要求提�
 - Git 仓库根：`C:\网站设计和3D可视化应用课\高级网页设计\xiaoli`（当前工作目录 `212程茗琪` 的上级目录），所有 git 命令用 `git -C` 指定该根目录执行
 - 默认分支：`master`
 - 已有远程 `origin` 指向 `https://gitee.com/neusoft_wangyao_jsj/xiaoli.git`，**本 skill 不改动 origin**，固定推送目标为 `https://gitee.com/neusoft_wangyao_jsj/mmm.git`
-- 认证：Gitee 私人令牌 `cde756e682c0dcad0bbaecf372f39bfb`，以 `用户名:令牌` 形式内嵌在推送 URL 中
+- 认证：Gitee 私人令牌 `cde756e682c0dcad0bbaecf372f39bfb`，以 `用户名:令牌` 形式内嵌在推送 URL 中。**用户名必须是 `chengming_qi`**（实测该令牌配 `neusoft_wangyao_jsj`、`li-xingdaa`、`cheng` 等均报 The token username invalid，配 `chengming_qi` 或 `13020358823` 可通过）
 
 ## 执行步骤
 
@@ -41,7 +41,7 @@ description: 提交项目并推送到 Gitee 仓库 mmm.git。当用户要求提�
 4. **推送**（令牌内嵌于 URL，当前分支推到同名远程分支）：
 
    ```powershell
-   git -C "C:\网站设计和3D可视化应用课\高级网页设计\xiaoli" push https://neusoft_wangyao_jsj:cde756e682c0dcad0bbaecf372f39bfb@gitee.com/neusoft_wangyao_jsj/mmm.git HEAD
+   git -C "C:\网站设计和3D可视化应用课\高级网页设计\xiaoli" push https://chengming_qi:cde756e682c0dcad0bbaecf372f39bfb@gitee.com/neusoft_wangyao_jsj/mmm.git HEAD
    ```
 
 5. **报告结果**：完成属实的 push 后，向用户报告 commit 短哈希、提交信息、推送的分支与目标仓库地址。
