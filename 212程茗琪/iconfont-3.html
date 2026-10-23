@@ -1,0 +1,499 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="description" content="CMQ 小筑 · 移动端底部导航（iconfont 字体图标版）">
+    <title>CMQ 小筑 · 字体图标导航 | iconfont-3</title>
+    <link rel="stylesheet" href="./font/iconfont.css">
+    <style>
+        /* ========== CMQ 小筑 · 移动端底部导航（字体图标版） ========== */
+        :root {
+            --cmq_paper: #faf5ec;
+            --cmq_cream: #fffdf6;
+            --cmq_ink: #3a322b;
+            --cmq_muted: #988a7c;
+            --cmq_coral: #e8896b;
+            --cmq_coral_deep: #d4704f;
+            --cmq_apricot: #f4bd93;
+            --cmq_butter: #f5d98f;
+            --cmq_blush: #f3c6c0;
+            --cmq_sage: #b7c9b1;
+            --cmq_red: #fa5151;
+            --cmq_line: rgba(58, 50, 43, .12);
+            --cmq_shadow: 0 16px 40px rgba(96, 70, 46, .14);
+            --cmq_radius: 20px;
+            --cmq_display: "Palatino Linotype", Georgia, "STZhongsong", "KaiTi", serif;
+            --cmq_body: "Trebuchet MS", "Microsoft YaHei", sans-serif;
+            --cmq_tabbar_h: 78px;
+        }
+
+        * { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--cmq_ink);
+            background:
+                radial-gradient(circle at 90% -4%, rgba(244, 189, 147, .4), transparent 42%),
+                radial-gradient(circle at -8% 36%, rgba(243, 198, 192, .38), transparent 40%),
+                var(--cmq_paper);
+            font-family: var(--cmq_body);
+            line-height: 1.65;
+        }
+
+        /* ---- 手机画布：居中自适应 ---- */
+        .cmq_app {
+            position: relative;
+            width: min(480px, 100%);
+            margin: 0 auto;
+            min-height: 100vh;
+            min-height: 100dvh;
+            padding-bottom: calc(var(--cmq_tabbar_h) + env(safe-area-inset-bottom) + 24px);
+            overflow: clip;
+        }
+
+        /* ---- 顶栏 ---- */
+        .cmq_topbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: calc(14px + env(safe-area-inset-top)) 20px 12px;
+        }
+        .cmq_topbar__brand {
+            display: inline-flex; align-items: center; gap: 10px;
+            font-weight: 800; letter-spacing: .1em; font-size: 16px;
+        }
+        .cmq_topbar__brand i {
+            width: 34px; height: 34px;
+            display: grid; place-items: center;
+            color: var(--cmq_cream);
+            background: linear-gradient(135deg, var(--cmq_coral), var(--cmq_apricot));
+            border-radius: 50% 50% 50% 9px;
+            font-size: 17px;
+            box-shadow: var(--cmq_shadow);
+            animation: cmq_spinMark 8s ease-in-out infinite;
+        }
+        @keyframes cmq_spinMark {
+            0%, 100% { border-radius: 50% 50% 50% 9px; }
+            50%      { border-radius: 9px 50% 50% 50%; }
+        }
+        .cmq_topbar__home {
+            display: inline-flex; align-items: center; gap: 7px;
+            font-size: 12.5px; font-weight: 700;
+            padding: 7px 14px;
+            border: 1.5px solid var(--cmq_ink);
+            border-radius: 999px;
+            transition: background .3s, color .3s;
+        }
+        .cmq_topbar__home:active { background: var(--cmq_ink); color: var(--cmq_cream); }
+        .cmq_topbar__home i { font-size: 13px; }
+
+        /* ---- 横幅 ---- */
+        .cmq_banner {
+            margin: 8px 16px 0;
+            padding: 24px 22px;
+            border-radius: var(--cmq_radius);
+            background: linear-gradient(135deg, var(--cmq_coral) 0%, var(--cmq_apricot) 78%, var(--cmq_butter) 130%);
+            color: var(--cmq_cream);
+            box-shadow: var(--cmq_shadow);
+            position: relative;
+            overflow: hidden;
+            animation: cmq_fadeUp .7s cubic-bezier(.22, .8, .3, 1) both;
+        }
+        .cmq_banner__eyebrow { font-size: 11px; letter-spacing: .3em; opacity: .85; }
+        .cmq_banner h1 {
+            font-family: var(--cmq_display);
+            font-size: 26px; letter-spacing: .08em;
+            margin: 8px 0 4px;
+        }
+        .cmq_banner p { margin: 0; font-size: 13px; opacity: .92; max-width: 17em; }
+        .cmq_banner__deco {
+            position: absolute; right: -12px; bottom: -22px;
+            font-size: 110px; opacity: .18;
+            transform: rotate(-14deg);
+            animation: cmq_sway 6s ease-in-out infinite;
+        }
+        @keyframes cmq_sway {
+            0%, 100% { transform: rotate(-14deg) translateY(0); }
+            50%      { transform: rotate(-8deg) translateY(-8px); }
+        }
+
+        /* ---- 功能入口 ---- */
+        .cmq_section { padding: 26px 20px 0; animation: cmq_fadeUp .7s .12s cubic-bezier(.22, .8, .3, 1) both; }
+        .cmq_section__head {
+            display: flex; align-items: baseline; justify-content: space-between;
+            margin-bottom: 14px;
+        }
+        .cmq_section__head h2 {
+            font-family: var(--cmq_display);
+            font-size: 18px; letter-spacing: .12em; margin: 0;
+        }
+        .cmq_section__head span { font-size: 11px; letter-spacing: .2em; color: var(--cmq_muted); }
+        .cmq_entries {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+        }
+        .cmq_entry {
+            background: var(--cmq_cream);
+            border: 1px solid var(--cmq_line);
+            border-radius: 16px;
+            padding: 14px 6px 12px;
+            text-align: center;
+            transition: transform .3s cubic-bezier(.34, 1.56, .64, 1), box-shadow .3s;
+        }
+        .cmq_entry:active { transform: scale(.94); }
+        .cmq_entry i {
+            display: inline-grid; place-items: center;
+            width: 44px; height: 44px;
+            font-size: 21px;
+            border-radius: 14px;
+            background: var(--cmq_tint, rgba(244, 189, 147, .3));
+            color: var(--cmq_ink);
+        }
+        .cmq_entry__name { display: block; margin-top: 8px; font-size: 12px; color: var(--cmq_muted); letter-spacing: .08em; }
+
+        /* ---- 徽章实验室 ---- */
+        .cmq_lab {
+            margin-top: 26px;
+            background: var(--cmq_cream);
+            border: 1px solid var(--cmq_line);
+            border-radius: var(--cmq_radius);
+            box-shadow: var(--cmq_shadow);
+            padding: 20px;
+        }
+        .cmq_lab h3 { margin: 0 0 6px; font-family: var(--cmq_display); letter-spacing: .1em; font-size: 16px; }
+        .cmq_lab__tip { margin: 0 0 14px; font-size: 12.5px; color: var(--cmq_muted); }
+        .cmq_lab__row { display: flex; gap: 10px; flex-wrap: wrap; }
+        .cmq_btn {
+            flex: 1 1 96px;
+            padding: 11px 8px;
+            font-size: 13px; font-weight: 700; letter-spacing: .08em;
+            color: var(--cmq_ink);
+            background: var(--cmq_paper);
+            border: 1.5px solid var(--cmq_ink);
+            border-radius: 999px;
+            cursor: pointer;
+            transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), background .25s, color .25s;
+        }
+        .cmq_btn:active { transform: scale(.93); }
+        .cmq_btn--warm { background: var(--cmq_coral); border-color: var(--cmq_coral); color: var(--cmq_cream); }
+        .cmq_btn--ghost { border-style: dashed; color: var(--cmq_muted); }
+        .cmq_btn--ghost.is-on { background: var(--cmq_red); border-color: var(--cmq_red); color: var(--cmq_cream); border-style: solid; }
+
+        /* ---- 实现说明 ---- */
+        .cmq_note {
+            margin-top: 22px;
+            background: var(--cmq_ink);
+            color: #f0e8d8;
+            font-family: Consolas, "Courier New", monospace;
+            font-size: 12px;
+            line-height: 1.9;
+            border-radius: 14px;
+            padding: 14px 16px;
+            overflow-x: auto;
+            white-space: pre;
+        }
+        .cmq_note .cmq_c-tag { color: #f5b98a; }
+        .cmq_note .cmq_c-cls { color: #b7c9b1; }
+        .cmq_note .cmq_c-txt { color: #cdbfa4; }
+
+        .cmq_swap {
+            display: flex;
+            gap: 12px;
+            margin-top: 22px;
+        }
+        .cmq_swap a {
+            flex: 1;
+            text-align: center;
+            padding: 13px 8px;
+            font-size: 13px; font-weight: 700; letter-spacing: .1em;
+            border-radius: 999px;
+            border: 1.5px solid var(--cmq_ink);
+            color: var(--cmq_ink);
+            transition: transform .25s, background .25s, color .25s;
+        }
+        .cmq_swap a:active { transform: scale(.95); background: var(--cmq_ink); color: var(--cmq_cream); }
+
+        /* ---- 底部导航（固定 · 自适应宽度） ---- */
+        .cmq_tabbar {
+            position: fixed;
+            left: 50%;
+            bottom: 0;
+            transform: translateX(-50%);
+            width: min(480px, 100%);
+            height: calc(var(--cmq_tabbar_h) + env(safe-area-inset-bottom));
+            padding: 8px 8px calc(8px + env(safe-area-inset-bottom));
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            background: rgba(255, 253, 246, .88);
+            -webkit-backdrop-filter: blur(14px);
+            backdrop-filter: blur(14px);
+            border-top: 1px solid var(--cmq_line);
+            box-shadow: 0 -8px 30px rgba(96, 70, 46, .1);
+            z-index: 50;
+        }
+        .cmq_tab {
+            position: relative;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            gap: 3px;
+            background: none;
+            border: 0;
+            padding: 0;
+            cursor: pointer;
+            font-family: inherit;
+            color: var(--cmq_muted);
+            transition: color .3s;
+        }
+        .cmq_tab__iconwrap {
+            position: relative;
+            width: 46px; height: 30px;
+            display: grid; place-items: center;
+            border-radius: 999px;
+            transition: background .35s cubic-bezier(.22, .8, .3, 1), transform .35s cubic-bezier(.34, 1.56, .64, 1);
+        }
+        .cmq_tab__iconwrap i {
+            font-size: 22px;
+            line-height: 1;
+            transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), color .3s;
+        }
+        .cmq_tab__label { font-size: 11px; letter-spacing: .12em; transition: color .3s; }
+        .cmq_tab.is-active { color: var(--cmq_coral_deep); }
+        .cmq_tab.is-active .cmq_tab__iconwrap {
+            background: linear-gradient(135deg, rgba(232, 137, 107, .18), rgba(245, 217, 143, .3));
+            transform: translateY(-2px);
+        }
+        .cmq_tab.is-active .cmq_tab__iconwrap i { transform: scale(1.14); color: var(--cmq_coral_deep); }
+        .cmq_tab:active .cmq_tab__iconwrap { transform: scale(.9); }
+
+        /* ---- 数字徽章与红点 ---- */
+        .cmq_badge {
+            position: absolute;
+            top: -6px;
+            right: -7px;
+            min-width: 18px;
+            height: 18px;
+            padding: 0 5px;
+            display: grid;
+            place-items: center;
+            font-size: 10.5px;
+            font-weight: 800;
+            font-family: var(--cmq_body);
+            color: var(--cmq_cream);
+            background: var(--cmq_red);
+            border: 2px solid var(--cmq_cream);
+            border-radius: 999px;
+            box-shadow: 0 3px 8px rgba(250, 81, 81, .4);
+            animation: cmq_pop .45s cubic-bezier(.34, 1.8, .64, 1) both;
+        }
+        .cmq_badge[hidden] { display: none; }
+        .cmq_dot {
+            position: absolute;
+            top: -3px;
+            right: -2px;
+            width: 9px;
+            height: 9px;
+            background: var(--cmq_red);
+            border: 2px solid var(--cmq_cream);
+            border-radius: 50%;
+            box-shadow: 0 2px 6px rgba(250, 81, 81, .45);
+            animation: cmq_pop .45s cubic-bezier(.34, 1.8, .64, 1) both;
+        }
+        .cmq_dot[hidden] { display: none; }
+        .cmq_badge.is-bump { animation: cmq_bump .4s cubic-bezier(.34, 1.8, .64, 1); }
+        @keyframes cmq_pop {
+            from { transform: scale(0); }
+            to   { transform: scale(1); }
+        }
+        @keyframes cmq_bump {
+            0%   { transform: scale(1); }
+            40%  { transform: scale(1.45); }
+            100% { transform: scale(1); }
+        }
+
+        /* ---- 轻提示 ---- */
+        .cmq_toast {
+            position: fixed;
+            left: 50%;
+            bottom: calc(var(--cmq_tabbar_h) + env(safe-area-inset-bottom) + 26px);
+            transform: translateX(-50%) translateY(14px);
+            background: rgba(58, 50, 43, .92);
+            color: var(--cmq_cream);
+            font-size: 13px;
+            letter-spacing: .08em;
+            padding: 10px 22px;
+            border-radius: 999px;
+            box-shadow: var(--cmq_shadow);
+            opacity: 0;
+            pointer-events: none;
+            transition: opacity .3s, transform .3s;
+            z-index: 60;
+        }
+        .cmq_toast.is-show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+        @keyframes cmq_fadeUp {
+            from { opacity: 0; transform: translateY(26px); }
+            to   { opacity: 1; transform: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cmq_app">
+
+        <!-- 顶栏 -->
+        <header class="cmq_topbar">
+            <div class="cmq_topbar__brand"><i class="iconfont icon-shouye"></i>CMQ&nbsp;小筑</div>
+            <a class="cmq_topbar__home" href="./index.html"><i class="iconfont icon-shouye-copy"></i>返回首页</a>
+        </header>
+
+        <!-- 横幅 -->
+        <section class="cmq_banner">
+            <div class="cmq_banner__eyebrow">FONT ICON · 字体图标</div>
+            <h1>掌上一座小筑</h1>
+            <p>底部导航由 iconfont 字体字形绘制，徽章与红点随点随变。</p>
+            <i class="iconfont icon-shu cmq_banner__deco"></i>
+        </section>
+
+        <!-- 功能入口 -->
+        <section class="cmq_section">
+            <div class="cmq_section__head"><h2>功能入口</h2><span>QUICK · 四宫格</span></div>
+            <div class="cmq_entries">
+                <a class="cmq_entry" style="--cmq_tint:rgba(183,201,177,.35)" href="javascript:;">
+                    <i class="iconfont icon-shu"></i><span class="cmq_entry__name">书架</span>
+                </a>
+                <a class="cmq_entry" style="--cmq_tint:rgba(243,198,192,.4)" href="javascript:;">
+                    <i class="iconfont icon-shoucang"></i><span class="cmq_entry__name">收藏</span>
+                </a>
+                <a class="cmq_entry" style="--cmq_tint:rgba(245,217,143,.4)" href="javascript:;">
+                    <i class="iconfont icon-gouwuche"></i><span class="cmq_entry__name">购物车</span>
+                </a>
+                <a class="cmq_entry" style="--cmq_tint:rgba(244,189,147,.4)" href="javascript:;">
+                    <i class="iconfont icon-shouji"></i><span class="cmq_entry__name">设备</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- 徽章实验室 -->
+        <section class="cmq_section">
+            <div class="cmq_lab">
+                <h3>徽章实验室</h3>
+                <p class="cmq_tip cmq_lab__tip">点按下方按钮，观察底栏「收藏」的数字徽章与「购物车」的红点变化。</p>
+                <div class="cmq_lab__row">
+                    <button class="cmq_btn cmq_btn--warm" id="cmq_addBtn" type="button">收藏 +1</button>
+                    <button class="cmq_btn" id="cmq_clearBtn" type="button">清零</button>
+                    <button class="cmq_btn cmq_btn--ghost is-on" id="cmq_dotBtn" type="button">红点 · 开</button>
+                </div>
+            </div>
+
+            <div class="cmq_note"><span class="cmq_c-tag">&lt;i</span> <span class="cmq_c-cls">class="iconfont icon-shoucang"</span><span class="cmq_c-tag">&gt;&lt;/i&gt;</span>
+
+<span class="cmq_c-txt">/* 字体图标：一个类名渲染字形
+   颜色随 CSS color 即时切换 */</span></div>
+
+            <div class="cmq_swap">
+                <a href="./iconfont-4.html">SVG symbol 版 →</a>
+                <a href="./inconfont-2.html">矢量图标馆</a>
+            </div>
+        </section>
+
+        <!-- 底部导航 -->
+        <nav class="cmq_tabbar" id="cmq_tabbar">
+            <button class="cmq_tab is-active" type="button" data-cmq-name="首页">
+                <span class="cmq_tab__iconwrap"><i class="iconfont icon-shouye"></i></span>
+                <span class="cmq_tab__label">首页</span>
+            </button>
+            <button class="cmq_tab" type="button" data-cmq-name="收藏">
+                <span class="cmq_tab__iconwrap">
+                    <i class="iconfont icon-shoucang"></i>
+                    <span class="cmq_badge" id="cmq_badge">6</span>
+                </span>
+                <span class="cmq_tab__label">收藏</span>
+            </button>
+            <button class="cmq_tab" type="button" data-cmq-name="购物车">
+                <span class="cmq_tab__iconwrap">
+                    <i class="iconfont icon-gouwuche"></i>
+                    <span class="cmq_dot" id="cmq_dot"></span>
+                </span>
+                <span class="cmq_tab__label">购物车</span>
+            </button>
+            <button class="cmq_tab" type="button" data-cmq-name="我的">
+                <span class="cmq_tab__iconwrap"><i class="iconfont icon-wode"></i></span>
+                <span class="cmq_tab__label">我的</span>
+            </button>
+        </nav>
+
+        <!-- 轻提示 -->
+        <div class="cmq_toast" id="cmq_toast"></div>
+
+    </div>
+
+    <script>
+        /* ========== CMQ 小筑 · 字体图标导航交互 ========== */
+
+        var cmq_badge = document.getElementById('cmq_badge');
+        var cmq_dot = document.getElementById('cmq_dot');
+        var cmq_toast = document.getElementById('cmq_toast');
+        var cmq_addBtn = document.getElementById('cmq_addBtn');
+        var cmq_clearBtn = document.getElementById('cmq_clearBtn');
+        var cmq_dotBtn = document.getElementById('cmq_dotBtn');
+        var cmq_count = 6;
+
+        /* 轻提示 */
+        var cmq_toastTimer = null;
+        function cmq_showToast(cmq_msg) {
+            cmq_toast.textContent = cmq_msg;
+            cmq_toast.classList.add('is-show');
+            clearTimeout(cmq_toastTimer);
+            cmq_toastTimer = setTimeout(function () {
+                cmq_toast.classList.remove('is-show');
+            }, 1400);
+        }
+
+        /* 徽章渲染：0 时隐藏，满 100 显示 99+ */
+        function cmq_renderBadge() {
+            if (cmq_count <= 0) {
+                cmq_badge.hidden = true;
+                return;
+            }
+            cmq_badge.hidden = false;
+            cmq_badge.textContent = cmq_count >= 100 ? '99+' : cmq_count;
+            cmq_badge.classList.remove('is-bump');
+            void cmq_badge.offsetWidth; /* 重置动画 */
+            cmq_badge.classList.add('is-bump');
+        }
+
+        cmq_addBtn.addEventListener('click', function () {
+            cmq_count += 1;
+            cmq_renderBadge();
+            cmq_showToast('已收藏 · 徽章 +1');
+        });
+
+        cmq_clearBtn.addEventListener('click', function () {
+            cmq_count = 0;
+            cmq_renderBadge();
+            cmq_showToast('徽章已清零');
+        });
+
+        cmq_dotBtn.addEventListener('click', function () {
+            var cmq_on = cmq_dot.hidden;
+            cmq_dot.hidden = !cmq_on;
+            cmq_dotBtn.classList.toggle('is-on', cmq_on);
+            cmq_dotBtn.textContent = cmq_on ? '红点 · 开' : '红点 · 关';
+            cmq_showToast(cmq_on ? '红点已开启' : '红点已关闭');
+        });
+
+        /* 底栏切换 */
+        var cmq_tabs = document.querySelectorAll('#cmq_tabbar .cmq_tab');
+        cmq_tabs.forEach(function (cmq_tab) {
+            cmq_tab.addEventListener('click', function () {
+                cmq_tabs.forEach(function (cmq_t) { cmq_t.classList.remove('is-active'); });
+                cmq_tab.classList.add('is-active');
+                cmq_showToast('已切换到「' + cmq_tab.getAttribute('data-cmq-name') + '」');
+            });
+        });
+    </script>
+</body>
+</html>

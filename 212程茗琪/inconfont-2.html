@@ -1,0 +1,675 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="CMQ ATELIER · Lucide 矢量图标艺术展">
+    <title>CMQ ATELIER · 矢量图标馆 | Lucide SVG</title>
+    <script src="./cdn/lucide/lucide.min.js"></script>
+    <style>
+        /* ========== CMQ ATELIER 品牌设计系统 · 矢量图标馆 ========== */
+        :root {
+            --cmq_paper: #faf6ee;
+            --cmq_cream: #fffdf7;
+            --cmq_ink: #38312a;
+            --cmq_muted: #948779;
+            --cmq_sage: #9db894;
+            --cmq_sage_deep: #7d9a73;
+            --cmq_butter: #f2d488;
+            --cmq_blush: #f2c3bd;
+            --cmq_apricot: #f0b98e;
+            --cmq_line: rgba(56, 49, 42, .12);
+            --cmq_shadow: 0 22px 55px rgba(90, 78, 55, .13);
+            --cmq_radius: 22px;
+            --cmq_display: "Palatino Linotype", Georgia, "STZhongsong", "KaiTi", serif;
+            --cmq_body: "Trebuchet MS", "Microsoft YaHei", sans-serif;
+            --cmq_mono: Consolas, "Courier New", monospace;
+        }
+
+        * { box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            margin: 0;
+            color: var(--cmq_ink);
+            background: var(--cmq_paper);
+            font-family: var(--cmq_body);
+            line-height: 1.7;
+            overflow-x: hidden;
+        }
+        a { color: inherit; text-decoration: none; }
+
+        /* ---- 背景漂浮色块 ---- */
+        .cmq_blob {
+            position: fixed;
+            border-radius: 50%;
+            filter: blur(70px);
+            opacity: .48;
+            pointer-events: none;
+            z-index: 0;
+            animation: cmq_drift 15s ease-in-out infinite alternate;
+        }
+        .cmq_blob--sage   { width: 430px; height: 430px; background: var(--cmq_sage); top: -150px; left: -120px; }
+        .cmq_blob--butter { width: 350px; height: 350px; background: var(--cmq_butter); bottom: 8%; right: -120px; animation-delay: -5s; }
+        .cmq_blob--blush  { width: 290px; height: 290px; background: var(--cmq_blush); top: 44%; left: 6%; opacity: .35; animation-delay: -9s; }
+        @keyframes cmq_drift {
+            from { transform: translate(0, 0) scale(1); }
+            to   { transform: translate(-34px, 40px) scale(1.1); }
+        }
+
+        .cmq_stage { position: relative; z-index: 1; }
+
+        /* ---- 顶部导航 ---- */
+        .cmq_nav {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 26px 0 22px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            border-bottom: 1px solid var(--cmq_line);
+        }
+        .cmq_brand { display: inline-flex; align-items: center; gap: 13px; font-weight: 800; letter-spacing: .14em; }
+        .cmq_brand__mark {
+            width: 42px; height: 42px;
+            display: grid; place-items: center;
+            color: var(--cmq_cream);
+            background: linear-gradient(135deg, var(--cmq_sage_deep), var(--cmq_sage));
+            border-radius: 12px 50% 50% 50%;
+            box-shadow: var(--cmq_shadow);
+            animation: cmq_spinMark 9s ease-in-out infinite;
+        }
+        .cmq_brand__mark svg { width: 20px; height: 20px; }
+        @keyframes cmq_spinMark {
+            0%, 100% { border-radius: 12px 50% 50% 50%; }
+            50%      { border-radius: 50% 12px 50% 50%; }
+        }
+        .cmq_brand small { display: block; color: var(--cmq_muted); font-size: 11px; font-weight: 600; letter-spacing: .22em; }
+        .cmq_nav__links { display: flex; align-items: center; gap: 26px; font-size: 14px; letter-spacing: .1em; }
+        .cmq_nav__links a { position: relative; padding: 4px 0; opacity: .82; transition: opacity .25s; }
+        .cmq_nav__links a::after {
+            content: "";
+            position: absolute; left: 0; bottom: -2px;
+            width: 100%; height: 2px;
+            background: var(--cmq_sage_deep);
+            transform: scaleX(0); transform-origin: right;
+            transition: transform .35s cubic-bezier(.6, 0, .2, 1);
+        }
+        .cmq_nav__links a:hover { opacity: 1; }
+        .cmq_nav__links a:hover::after { transform: scaleX(1); transform-origin: left; }
+        .cmq_nav__home {
+            padding: 9px 20px;
+            border: 1.5px solid var(--cmq_ink);
+            border-radius: 999px;
+            font-weight: 700;
+            display: inline-flex; align-items: center; gap: 8px;
+            transition: background .3s, color .3s, transform .3s;
+        }
+        .cmq_nav__home:hover { background: var(--cmq_ink); color: var(--cmq_cream); transform: translateY(-2px); }
+        .cmq_nav__home svg { width: 14px; height: 14px; }
+
+        /* ---- 主视觉 ---- */
+        .cmq_hero {
+            width: min(1180px, calc(100% - 48px));
+            margin: 0 auto;
+            padding: 92px 0 72px;
+            display: grid;
+            grid-template-columns: 1.25fr .75fr;
+            gap: 40px;
+            align-items: center;
+        }
+        .cmq_hero__eyebrow {
+            display: inline-flex; align-items: center; gap: 12px;
+            font-size: 13px; letter-spacing: .32em; color: var(--cmq_sage_deep);
+            font-weight: 700; margin-bottom: 20px;
+        }
+        .cmq_hero__eyebrow::before { content: ""; width: 44px; height: 2px; background: var(--cmq_sage_deep); }
+        .cmq_hero h1 {
+            font-family: var(--cmq_display);
+            font-size: clamp(3rem, 7.4vw, 5.6rem);
+            line-height: 1.14;
+            margin: 0 0 26px;
+            letter-spacing: .06em;
+            font-weight: 700;
+        }
+        .cmq_hero h1 em {
+            font-style: normal;
+            color: var(--cmq_sage_deep);
+            position: relative;
+            white-space: nowrap;
+        }
+        .cmq_hero h1 em svg {
+            position: absolute; left: 0; bottom: -.14em;
+            width: 100%; height: .32em;
+            z-index: -1;
+        }
+        .cmq_hero p { max-width: 32em; color: var(--cmq_muted); font-size: 16px; margin: 0; }
+        .cmq_hero p strong { color: var(--cmq_ink); }
+
+        /* SVG 描边绘画装饰牌 */
+        .cmq_hero__art {
+            position: relative;
+            min-height: 360px;
+            background: var(--cmq_cream);
+            border: 1px solid var(--cmq_line);
+            border-radius: var(--cmq_radius);
+            box-shadow: var(--cmq_shadow);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 34px;
+            overflow: hidden;
+        }
+        .cmq_hero__art::before {
+            content: "";
+            position: absolute; inset: 14px;
+            border: 1.5px dashed rgba(125, 154, 115, .45);
+            border-radius: 14px;
+            pointer-events: none;
+        }
+        .cmq_hero__art svg {
+            width: 84px; height: 84px;
+            color: var(--cmq_ink);
+        }
+        .cmq_hero__art svg:nth-child(2) { width: 116px; height: 116px; color: var(--cmq_sage_deep); }
+        .cmq_draw svg path,
+        .cmq_draw svg circle,
+        .cmq_draw svg line,
+        .cmq_draw svg polyline,
+        .cmq_draw svg rect,
+        .cmq_draw svg ellipse {
+            stroke-dasharray: 420;
+            stroke-dashoffset: 420;
+            animation: cmq_drawin 2.4s cubic-bezier(.5, 0, .2, 1) forwards;
+        }
+        .cmq_draw svg:nth-child(2) path,
+        .cmq_draw svg:nth-child(2) circle { animation-delay: .35s; }
+        .cmq_draw svg:nth-child(3) path,
+        .cmq_draw svg:nth-child(3) circle { animation-delay: .7s; }
+        @keyframes cmq_drawin { to { stroke-dashoffset: 0; } }
+        .cmq_hero__tag {
+            position: absolute;
+            background: var(--cmq_ink); color: var(--cmq_cream);
+            font-family: var(--cmq_mono);
+            font-size: 12px; letter-spacing: .08em;
+            padding: 7px 14px;
+            border-radius: 999px;
+            box-shadow: var(--cmq_shadow);
+        }
+        .cmq_hero__tag--a { top: 26px; left: 30px; transform: rotate(-5deg); animation: cmq_float 6s ease-in-out infinite; }
+        .cmq_hero__tag--b { bottom: 30px; right: 26px; transform: rotate(4deg); animation: cmq_float 7s ease-in-out -2s infinite; }
+        @keyframes cmq_float {
+            0%, 100% { translate: 0 0; }
+            50%      { translate: 0 -10px; }
+        }
+
+        /* ---- 跑马灯 ---- */
+        .cmq_marquee {
+            border-top: 1px solid var(--cmq_line);
+            border-bottom: 1px solid var(--cmq_line);
+            background: rgba(255, 253, 247, .72);
+            overflow: hidden;
+            padding: 16px 0;
+        }
+        .cmq_marquee__track {
+            display: flex; gap: 54px; width: max-content;
+            animation: cmq_roll 26s linear infinite;
+        }
+        .cmq_marquee:hover .cmq_marquee__track { animation-play-state: paused; }
+        .cmq_marquee__item {
+            display: inline-flex; align-items: center; gap: 16px;
+            font-family: var(--cmq_display);
+            font-size: 19px; letter-spacing: .2em;
+            color: rgba(56, 49, 42, .68);
+            white-space: nowrap;
+        }
+        .cmq_marquee__item svg { width: 17px; height: 17px; color: var(--cmq_sage_deep); }
+        @keyframes cmq_roll { to { transform: translateX(-50%); } }
+
+        /* ---- 章节公共 ---- */
+        .cmq_section { width: min(1180px, calc(100% - 48px)); margin: 0 auto; padding: 84px 0 30px; }
+        .cmq_section__head { display: flex; align-items: baseline; gap: 22px; margin-bottom: 14px; }
+        .cmq_section__no {
+            font-family: var(--cmq_display);
+            font-size: 52px; color: transparent;
+            -webkit-text-stroke: 1.5px var(--cmq_sage_deep);
+            line-height: 1;
+        }
+        .cmq_section__head h2 {
+            font-family: var(--cmq_display);
+            font-size: clamp(1.7rem, 3.2vw, 2.4rem);
+            margin: 0; letter-spacing: .1em;
+        }
+        .cmq_section__sub { color: var(--cmq_muted); max-width: 44em; margin: 0 0 38px; font-size: 15px; }
+
+        /* ---- 矢量画廊 ---- */
+        .cmq_grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+            gap: 18px;
+        }
+        .cmq_card {
+            background: var(--cmq_cream);
+            border: 1px solid var(--cmq_line);
+            border-radius: 18px;
+            padding: 26px 14px 18px;
+            text-align: center;
+            cursor: pointer;
+            transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), box-shadow .35s, border-color .35s;
+        }
+        .cmq_card:hover {
+            transform: translateY(-8px) rotate(1.2deg);
+            box-shadow: var(--cmq_shadow);
+            border-color: rgba(125, 154, 115, .55);
+        }
+        .cmq_card svg {
+            width: 36px; height: 36px;
+            color: var(--cmq_ink);
+            transition: transform .35s cubic-bezier(.34, 1.56, .64, 1), color .35s;
+        }
+        .cmq_card:hover svg { transform: scale(1.28) rotate(-8deg); color: var(--cmq_sage_deep); }
+        .cmq_card__name {
+            display: block; margin-top: 14px;
+            font-family: var(--cmq_mono);
+            font-size: 12px; color: var(--cmq_muted);
+            word-break: break-all;
+        }
+        .cmq_card__glyph {
+            display: inline-block; margin-top: 8px;
+            font-size: 10px; letter-spacing: .2em;
+            color: var(--cmq_sage_deep);
+            border-top: 1px dashed var(--cmq_line);
+            padding-top: 7px; width: 80%;
+        }
+        .cmq_card.is-picked { border-color: var(--cmq_sage_deep); box-shadow: 0 0 0 3px rgba(157, 184, 148, .25); }
+
+        /* ---- 实验室 ---- */
+        .cmq_lab {
+            display: grid;
+            grid-template-columns: 1.05fr .95fr;
+            gap: 34px;
+            background: var(--cmq_cream);
+            border: 1px solid var(--cmq_line);
+            border-radius: var(--cmq_radius);
+            box-shadow: var(--cmq_shadow);
+            padding: 44px 46px;
+        }
+        .cmq_lab__board {
+            border-radius: 16px;
+            background:
+                radial-gradient(circle at 22% 20%, rgba(242, 212, 136, .38), transparent 44%),
+                radial-gradient(circle at 80% 82%, rgba(157, 184, 148, .35), transparent 46%),
+                var(--cmq_paper);
+            border: 1.5px dashed rgba(125, 154, 115, .45);
+            min-height: 250px;
+            display: flex; flex-wrap: wrap; gap: 36px;
+            align-items: center; justify-content: center;
+            padding: 30px;
+        }
+        .cmq_lab__board svg { transition: width .18s ease-out, height .18s ease-out, color .3s; }
+        .cmq_lab__panel h3 { margin: 4px 0 20px; font-family: var(--cmq_display); letter-spacing: .08em; }
+        .cmq_ctrl { margin-bottom: 20px; }
+        .cmq_ctrl__label {
+            display: flex; justify-content: space-between;
+            font-size: 13px; letter-spacing: .12em; color: var(--cmq_muted);
+            margin-bottom: 8px;
+        }
+        .cmq_ctrl__label b { color: var(--cmq_ink); font-family: var(--cmq_mono); }
+        .cmq_range {
+            -webkit-appearance: none; appearance: none;
+            width: 100%; height: 5px; border-radius: 999px;
+            background: linear-gradient(90deg, var(--cmq_sage_deep), var(--cmq_butter));
+            outline: none;
+        }
+        .cmq_range::-webkit-slider-thumb {
+            -webkit-appearance: none; appearance: none;
+            width: 20px; height: 20px; border-radius: 50%;
+            background: var(--cmq_cream);
+            border: 2.5px solid var(--cmq_sage_deep);
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(125, 154, 115, .4);
+            transition: transform .2s;
+        }
+        .cmq_range::-webkit-slider-thumb:hover { transform: scale(1.2); }
+        .cmq_dots { display: flex; gap: 12px; }
+        .cmq_dot {
+            width: 26px; height: 26px; border-radius: 50%;
+            border: 2px solid transparent;
+            cursor: pointer;
+            transition: transform .25s cubic-bezier(.34, 1.56, .64, 1), border-color .25s;
+        }
+        .cmq_dot:hover { transform: scale(1.18); }
+        .cmq_dot.is-active { border-color: var(--cmq_ink); transform: scale(1.12); }
+        .cmq_code {
+            margin-top: 24px;
+            background: var(--cmq_ink);
+            color: #efe7d4;
+            font-family: var(--cmq_mono);
+            font-size: 12px;
+            border-radius: 12px;
+            padding: 16px 18px;
+            overflow: auto;
+            line-height: 1.7;
+            max-height: 210px;
+            white-space: pre;
+        }
+        .cmq_code .cmq_c-txt { color: #cdbfa4; }
+
+        /* ---- 对照小卡 ---- */
+        .cmq_compare {
+            display: grid; grid-template-columns: 1fr 1fr; gap: 22px;
+            margin-top: 44px;
+        }
+        .cmq_compare__cell {
+            border-radius: 18px; padding: 26px 30px;
+            border: 1px solid var(--cmq_line);
+        }
+        .cmq_compare__cell--yes { background: linear-gradient(135deg, rgba(157, 184, 148, .32), rgba(242, 212, 136, .22)); }
+        .cmq_compare__cell--no  { background: linear-gradient(135deg, rgba(242, 195, 189, .32), rgba(240, 185, 142, .2)); }
+        .cmq_compare__cell h4 { margin: 0 0 10px; font-size: 15px; letter-spacing: .14em; display: flex; gap: 10px; align-items: center; }
+        .cmq_compare__cell h4 svg { width: 18px; height: 18px; flex: none; }
+        .cmq_compare__cell p { margin: 0; font-size: 13.5px; color: var(--cmq_muted); }
+
+        /* ---- 页脚 ---- */
+        .cmq_footer {
+            width: min(1180px, calc(100% - 48px));
+            margin: 90px auto 0;
+            padding: 34px 0 40px;
+            border-top: 1px solid var(--cmq_line);
+            display: flex; justify-content: space-between; align-items: center; gap: 20px; flex-wrap: wrap;
+            font-size: 14px;
+        }
+        .cmq_footer__brand { font-family: var(--cmq_display); letter-spacing: .18em; font-weight: 700; }
+        .cmq_footer__links { display: flex; gap: 24px; }
+        .cmq_footer__links a {
+            display: inline-flex; align-items: center; gap: 9px;
+            padding: 10px 22px;
+            border: 1.5px solid var(--cmq_ink);
+            border-radius: 999px;
+            font-weight: 700;
+            transition: background .3s, color .3s, transform .3s;
+        }
+        .cmq_footer__links a:hover { background: var(--cmq_ink); color: var(--cmq_cream); transform: translateY(-3px); }
+        .cmq_footer__links a svg { width: 14px; height: 14px; transition: transform .3s; }
+        .cmq_footer__links a:hover svg { transform: translateX(4px); }
+
+        /* ---- 滚动浮现 ---- */
+        .cmq_reveal { opacity: 0; transform: translateY(34px); transition: opacity .8s ease, transform .8s cubic-bezier(.22, .8, .3, 1); }
+        .cmq_reveal.is-in { opacity: 1; transform: none; }
+
+        @media (max-width: 900px) {
+            .cmq_hero, .cmq_lab { grid-template-columns: 1fr; }
+            .cmq_compare { grid-template-columns: 1fr; }
+            .cmq_nav__links { display: none; }
+        }
+    </style>
+</head>
+<body>
+    <div class="cmq_blob cmq_blob--sage"></div>
+    <div class="cmq_blob cmq_blob--butter"></div>
+    <div class="cmq_blob cmq_blob--blush"></div>
+
+    <div class="cmq_stage">
+
+        <!-- 导航 -->
+        <nav class="cmq_nav">
+            <a class="cmq_brand" href="./index.html">
+                <span class="cmq_brand__mark"><i data-lucide="brush"></i></span>
+                <span>CMQ&nbsp;ATELIER<small>SVG · STROKE · ART</small></span>
+            </a>
+            <div class="cmq_nav__links">
+                <a href="#cmq_gallery">矢量画廊</a>
+                <a href="#cmq_lab">描边实验室</a>
+                <a href="./iconfont-1.html">← Font Awesome 字体版</a>
+                <a class="cmq_nav__home" href="./index.html"><i data-lucide="home"></i>返回首页</a>
+            </div>
+        </nav>
+
+        <!-- 主视觉 -->
+        <header class="cmq_hero">
+            <div>
+                <div class="cmq_hero__eyebrow">02 — SVG ICON · 矢量图标</div>
+                <h1>一笔一画，<br><em>描边<svg viewBox="0 0 200 20" preserveAspectRatio="none"><path d="M4 13 Q 60 3 100 10 T 196 8" fill="none" stroke="#9db894" stroke-width="7" stroke-linecap="round"/></svg></em>成画。</h1>
+                <p>
+                    Lucide 的每个图标都是一幅<strong>矢量路径（SVG path）</strong>。
+                    它不依赖字体文件，而是以<strong>描边（stroke）</strong>绘制——
+                    线宽、颜色、圆角端点皆可调，放大到任意尺寸都<strong>锐利如初</strong>。
+                </p>
+            </div>
+            <div class="cmq_hero__art cmq_draw" id="cmq_heroArt">
+                <span class="cmq_hero__tag cmq_hero__tag--a">&lt;svg stroke&gt;</span>
+                <i data-lucide="flower-2"></i>
+                <i data-lucide="palette"></i>
+                <i data-lucide="sparkles"></i>
+                <span class="cmq_hero__tag cmq_hero__tag--b">VECTOR · 矢量</span>
+            </div>
+        </header>
+
+        <!-- 跑马灯 -->
+        <div class="cmq_marquee" aria-hidden="true">
+            <div class="cmq_marquee__track" id="cmq_marqueeTrack">
+                <span class="cmq_marquee__item"><i data-lucide="coffee"></i>SVG AS ART</span>
+                <span class="cmq_marquee__item"><i data-lucide="star"></i>描边成画</span>
+                <span class="cmq_marquee__item"><i data-lucide="heart"></i>LUCIDE ICONS</span>
+                <span class="cmq_marquee__item"><i data-lucide="feather"></i>矢量即自由</span>
+                <span class="cmq_marquee__item"><i data-lucide="sparkles"></i>CMQ ATELIER</span>
+                <span class="cmq_marquee__item"><i data-lucide="gem"></i>STROKE ICON</span>
+            </div>
+        </div>
+
+        <!-- 矢量画廊 -->
+        <section class="cmq_section" id="cmq_gallery">
+            <div class="cmq_section__head cmq_reveal">
+                <span class="cmq_section__no">01</span>
+                <h2>矢量画廊 · Gallery</h2>
+            </div>
+            <p class="cmq_section__sub cmq_reveal">
+                每一枚图标都以 data-lucide 声明、由脚本替换为内联 SVG。<strong>点击任意卡片</strong>，可在下方实验室中查看它真实的 SVG 源码。
+            </p>
+            <div class="cmq_grid cmq_reveal" id="cmq_galleryGrid">
+                <button class="cmq_card"><i data-lucide="palette"></i><span class="cmq_card__name">palette</span><span class="cmq_card__glyph">调色盘</span></button>
+                <button class="cmq_card"><i data-lucide="camera"></i><span class="cmq_card__name">camera</span><span class="cmq_card__glyph">相机</span></button>
+                <button class="cmq_card"><i data-lucide="coffee"></i><span class="cmq_card__name">coffee</span><span class="cmq_card__glyph">咖啡</span></button>
+                <button class="cmq_card"><i data-lucide="leaf"></i><span class="cmq_card__name">leaf</span><span class="cmq_card__glyph">叶片</span></button>
+                <button class="cmq_card"><i data-lucide="music"></i><span class="cmq_card__name">music</span><span class="cmq_card__glyph">音符</span></button>
+                <button class="cmq_card"><i data-lucide="gift"></i><span class="cmq_card__name">gift</span><span class="cmq_card__glyph">礼物</span></button>
+                <button class="cmq_card"><i data-lucide="cake"></i><span class="cmq_card__name">cake</span><span class="cmq_card__glyph">蛋糕</span></button>
+                <button class="cmq_card"><i data-lucide="ice-cream-cone"></i><span class="cmq_card__name">ice-cream-cone</span><span class="cmq_card__glyph">冰淇淋</span></button>
+                <button class="cmq_card"><i data-lucide="umbrella"></i><span class="cmq_card__name">umbrella</span><span class="cmq_card__glyph">雨伞</span></button>
+                <button class="cmq_card"><i data-lucide="mountain"></i><span class="cmq_card__name">mountain</span><span class="cmq_card__glyph">山峦</span></button>
+                <button class="cmq_card"><i data-lucide="crown"></i><span class="cmq_card__name">crown</span><span class="cmq_card__glyph">王冠</span></button>
+                <button class="cmq_card"><i data-lucide="sparkles"></i><span class="cmq_card__name">sparkles</span><span class="cmq_card__glyph">星光</span></button>
+                <button class="cmq_card"><i data-lucide="heart"></i><span class="cmq_card__name">heart</span><span class="cmq_card__glyph">爱心</span></button>
+                <button class="cmq_card"><i data-lucide="star"></i><span class="cmq_card__name">star</span><span class="cmq_card__glyph">星形</span></button>
+                <button class="cmq_card"><i data-lucide="bell"></i><span class="cmq_card__name">bell</span><span class="cmq_card__glyph">铃铛</span></button>
+                <button class="cmq_card"><i data-lucide="moon"></i><span class="cmq_card__name">moon</span><span class="cmq_card__glyph">月亮</span></button>
+                <button class="cmq_card"><i data-lucide="sun"></i><span class="cmq_card__name">sun</span><span class="cmq_card__glyph">太阳</span></button>
+                <button class="cmq_card"><i data-lucide="cloud"></i><span class="cmq_card__name">cloud</span><span class="cmq_card__glyph">云朵</span></button>
+                <button class="cmq_card"><i data-lucide="feather"></i><span class="cmq_card__name">feather</span><span class="cmq_card__glyph">羽毛</span></button>
+                <button class="cmq_card"><i data-lucide="flower-2"></i><span class="cmq_card__name">flower-2</span><span class="cmq_card__glyph">花朵</span></button>
+                <button class="cmq_card"><i data-lucide="bird"></i><span class="cmq_card__name">bird</span><span class="cmq_card__glyph">飞鸟</span></button>
+                <button class="cmq_card"><i data-lucide="cat"></i><span class="cmq_card__name">cat</span><span class="cmq_card__glyph">猫咪</span></button>
+                <button class="cmq_card"><i data-lucide="dog"></i><span class="cmq_card__name">dog</span><span class="cmq_card__glyph">小狗</span></button>
+                <button class="cmq_card"><i data-lucide="cherry"></i><span class="cmq_card__name">cherry</span><span class="cmq_card__glyph">樱桃</span></button>
+                <button class="cmq_card"><i data-lucide="rainbow"></i><span class="cmq_card__name">rainbow</span><span class="cmq_card__glyph">彩虹</span></button>
+                <button class="cmq_card"><i data-lucide="paintbrush"></i><span class="cmq_card__name">paintbrush</span><span class="cmq_card__glyph">画笔</span></button>
+                <button class="cmq_card"><i data-lucide="paint-bucket"></i><span class="cmq_card__name">paint-bucket</span><span class="cmq_card__glyph">颜料桶</span></button>
+                <button class="cmq_card"><i data-lucide="gem"></i><span class="cmq_card__name">gem</span><span class="cmq_card__glyph">宝石</span></button>
+                <button class="cmq_card"><i data-lucide="shell"></i><span class="cmq_card__name">shell</span><span class="cmq_card__glyph">贝壳</span></button>
+                <button class="cmq_card"><i data-lucide="waves"></i><span class="cmq_card__name">waves</span><span class="cmq_card__glyph">波浪</span></button>
+                <button class="cmq_card"><i data-lucide="rocket"></i><span class="cmq_card__name">rocket</span><span class="cmq_card__glyph">火箭</span></button>
+                <button class="cmq_card"><i data-lucide="scissors"></i><span class="cmq_card__name">scissors</span><span class="cmq_card__glyph">剪刀</span></button>
+            </div>
+        </section>
+
+        <!-- 描边实验室 -->
+        <section class="cmq_section" id="cmq_lab">
+            <div class="cmq_section__head cmq_reveal">
+                <span class="cmq_section__no">02</span>
+                <h2>描边实验室 · Lab</h2>
+            </div>
+            <p class="cmq_section__sub cmq_reveal">
+                SVG 图标的灵魂在<strong>描边</strong>：拖动滑杆实时改变 stroke-width，这是字体图标做不到的事。画廊中点选的图标会在此展示源码。
+            </p>
+
+            <div class="cmq_lab cmq_reveal">
+                <div class="cmq_lab__board" id="cmq_labBoard">
+                    <i data-lucide="palette"></i>
+                    <i data-lucide="camera"></i>
+                    <i data-lucide="coffee"></i>
+                    <i data-lucide="leaf"></i>
+                    <i data-lucide="music"></i>
+                </div>
+                <div class="cmq_lab__panel">
+                    <h3>描边控制台</h3>
+                    <div class="cmq_ctrl">
+                        <div class="cmq_ctrl__label"><span>线宽 stroke-width</span><b id="cmq_strokeVal">2</b></div>
+                        <input class="cmq_range" type="range" id="cmq_strokeRange" min="0.5" max="3" step="0.25" value="2">
+                    </div>
+                    <div class="cmq_ctrl">
+                        <div class="cmq_ctrl__label"><span>尺寸 size</span><b id="cmq_sizeVal">56px</b></div>
+                        <input class="cmq_range" type="range" id="cmq_sizeRange" min="24" max="120" step="2" value="56">
+                    </div>
+                    <div class="cmq_ctrl">
+                        <div class="cmq_ctrl__label"><span>色板 color</span></div>
+                        <div class="cmq_dots" id="cmq_dots">
+                            <button class="cmq_dot is-active" style="background:#38312a" data-cmq-color="#38312a" aria-label="墨色"></button>
+                            <button class="cmq_dot" style="background:#7d9a73" data-cmq-color="#7d9a73" aria-label="鼠尾草绿"></button>
+                            <button class="cmq_dot" style="background:#f0b98e" data-cmq-color="#f0b98e" aria-label="杏色"></button>
+                            <button class="cmq_dot" style="background:#f2d488" data-cmq-color="#f2d488" aria-label="奶油黄"></button>
+                            <button class="cmq_dot" style="background:#f2c3bd" data-cmq-color="#f2c3bd" aria-label="樱花粉"></button>
+                            <button class="cmq_dot" style="background:#9db894" data-cmq-color="#9db894" aria-label="浅草绿"></button>
+                        </div>
+                    </div>
+                    <div class="cmq_code" id="cmq_svgCode"><span class="cmq_c-txt">/* 点击上方画廊中的任意图标，
+   这里将显示它真实的 SVG 源码 */</span></div>
+                </div>
+            </div>
+
+            <div class="cmq_compare cmq_reveal">
+                <div class="cmq_compare__cell cmq_compare__cell--yes">
+                    <h4><i data-lucide="circle-check"></i>SVG 图标的长处</h4>
+                    <p>描边粗细、颜色、渐变、多色皆可调；矢量路径任意缩放不失真；无字体加载闪烁，天然支持无障碍与动画。</p>
+                </div>
+                <div class="cmq_compare__cell cmq_compare__cell--no">
+                    <h4><i data-lucide="circle-x"></i>SVG 图标的代价</h4>
+                    <p>每个图标都是一段独立路径，DOM 节点更多；成百上千枚图标同屏时，字体方案反而更轻——两种方案各得其所。</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- 页脚 -->
+        <footer class="cmq_footer">
+            <div class="cmq_footer__brand">CMQ&nbsp;ATELIER — 矢量图标馆</div>
+            <div class="cmq_footer__links">
+                <a href="./iconfont-1.html"><i data-lucide="arrow-left"></i>回看字体图标版</a>
+                <a href="./index.html"><i data-lucide="home"></i>返回首页</a>
+            </div>
+        </footer>
+
+    </div>
+
+    <script>
+        /* ========== CMQ ATELIER · 矢量图标馆交互 ========== */
+
+        /* 首次渲染：把所有 data-lucide 替换为内联 SVG */
+        var cmq_strokeWidth = 2;
+        var cmq_strokeRange = document.getElementById('cmq_strokeRange');
+        var cmq_strokeVal = document.getElementById('cmq_strokeVal');
+        var cmq_sizeRange = document.getElementById('cmq_sizeRange');
+        var cmq_sizeVal = document.getElementById('cmq_sizeVal');
+        var cmq_labBoard = document.getElementById('cmq_labBoard');
+        var cmq_svgCode = document.getElementById('cmq_svgCode');
+        var cmq_galleryCards = document.querySelectorAll('#cmq_galleryGrid .cmq_card');
+        var cmq_pickedCard = null;
+        var cmq_iconSize = 56;
+        var cmq_iconColor = '#38312a';
+
+        function cmq_renderIcons() {
+            lucide.createIcons();
+            cmq_applyStroke();
+            cmq_labBoard.querySelectorAll('svg').forEach(function (cmq_svg) {
+                cmq_svg.style.width = cmq_iconSize + 'px';
+                cmq_svg.style.height = cmq_iconSize + 'px';
+                cmq_svg.style.color = cmq_iconColor;
+            });
+        }
+
+        /* 直接改写 SVG 根元素的 stroke-width 属性：即时生效，且不受重渲染影响 */
+        function cmq_applyStroke() {
+            document.querySelectorAll('svg.lucide').forEach(function (cmq_svg) {
+                cmq_svg.setAttribute('stroke-width', cmq_strokeWidth);
+            });
+        }
+        cmq_renderIcons();
+
+        /* 跑马灯：复制一份内容实现无缝循环（复制后再渲染） */
+        var cmq_marqueeTrack = document.getElementById('cmq_marqueeTrack');
+        cmq_marqueeTrack.innerHTML += cmq_marqueeTrack.innerHTML;
+        cmq_renderIcons();
+
+        /* 滚动浮现 */
+        var cmq_revealObserver = new IntersectionObserver(function (cmq_entries) {
+            cmq_entries.forEach(function (cmq_entry) {
+                if (cmq_entry.isIntersecting) {
+                    cmq_entry.target.classList.add('is-in');
+                    cmq_revealObserver.unobserve(cmq_entry.target);
+                }
+            });
+        }, { threshold: 0.12 });
+        document.querySelectorAll('.cmq_reveal').forEach(function (cmq_el) {
+            cmq_revealObserver.observe(cmq_el);
+        });
+
+        /* 描边滑杆：直接改写全部 SVG 的 stroke-width */
+        cmq_strokeRange.addEventListener('input', function () {
+            cmq_strokeWidth = parseFloat(cmq_strokeRange.value);
+            cmq_strokeVal.textContent = cmq_strokeWidth;
+            cmq_applyStroke();
+            cmq_refreshPickedCode();
+        });
+
+        /* 尺寸滑杆：通过 CSS 控制实验室图标大小 */
+        cmq_sizeRange.addEventListener('input', function () {
+            cmq_iconSize = parseInt(cmq_sizeRange.value, 10);
+            cmq_sizeVal.textContent = cmq_iconSize + 'px';
+            cmq_labBoard.querySelectorAll('svg').forEach(function (cmq_svg) {
+                cmq_svg.style.width = cmq_iconSize + 'px';
+                cmq_svg.style.height = cmq_iconSize + 'px';
+            });
+        });
+
+        /* 色板 */
+        var cmq_dots = document.querySelectorAll('#cmq_dots .cmq_dot');
+        cmq_dots.forEach(function (cmq_dot) {
+            cmq_dot.addEventListener('click', function () {
+                cmq_dots.forEach(function (cmq_d) { cmq_d.classList.remove('is-active'); });
+                cmq_dot.classList.add('is-active');
+                cmq_iconColor = cmq_dot.getAttribute('data-cmq-color');
+                cmq_labBoard.querySelectorAll('svg').forEach(function (cmq_svg) {
+                    cmq_svg.style.color = cmq_iconColor;
+                });
+            });
+        });
+
+        /* 画廊点选：展示 SVG 源码 */
+        function cmq_formatSvg(cmq_svg) {
+            return cmq_svg.outerHTML.replace(/></g, '>\n<');
+        }
+        function cmq_refreshPickedCode() {
+            if (!cmq_pickedCard) { return; }
+            var cmq_svg = cmq_pickedCard.querySelector('svg');
+            if (cmq_svg) {
+                cmq_svgCode.textContent = cmq_formatSvg(cmq_svg);
+            }
+        }
+        cmq_galleryCards.forEach(function (cmq_card) {
+            cmq_card.addEventListener('click', function () {
+                if (cmq_pickedCard) { cmq_pickedCard.classList.remove('is-picked'); }
+                cmq_pickedCard = cmq_card;
+                cmq_card.classList.add('is-picked');
+                cmq_refreshPickedCode();
+            });
+        });
+    </script>
+</body>
+</html>

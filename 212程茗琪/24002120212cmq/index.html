@@ -1,0 +1,434 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>24002120212-程茗琪</title>
+    <style>
+@font-face {
+  font-family: "iconfont"; /* Project id 5243995 */
+  src: url('iconfont.woff2?t=1792134124440') format('woff2'),
+       url('iconfont.woff?t=1792134124440') format('woff'),
+       url('iconfont.ttf?t=1792134124440') format('truetype');
+}
+
+.iconfont {
+  font-family: "iconfont" !important;
+  font-size: 22px;
+  font-style: normal;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-a-500445776:before {
+  content: "\e604";
+}
+
+.icon-a-500445129:before {
+  content: "\e603";
+}
+
+.icon-a-500444327:before {
+  content: "\e601";
+}
+
+.icon-a-500443786:before {
+  content: "\e600";
+}
+
+.icon-a-500442931:before {
+  content: "\e602";
+}
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+        }
+body {
+    background-color: #f6f7fa;
+    margin:0;
+    padding:0;
+}
+.container {
+    width: 100%;
+    min-height: 100vh;
+    background: #f6f7fa;
+    overflow: hidden;
+    /*删掉 width:420px、height:900px、border-radius、border*/
+}
+        /*顶部状态栏模拟*/
+        .status-bar{
+            height:32px;
+            background:#f6f7fa;
+            display:flex;
+            justify-content: space-between;
+            align-items:center;
+            padding:0 20px;
+            font-size:14px;
+            color:#222;
+        }
+        .main-wrap{
+            display:flex;
+            height: calc(100% - 32px - 70px);
+        }
+        .left-sidebar{
+            width:80px;
+            background:#f6f7fa;
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            padding-top:20px;
+            gap:24px;
+            border-right:1px solid #e8e8e8;
+        }
+        .sidebar-avatar{
+            width:48px;
+            height:48px;
+            border-radius:50%;
+            background:#ddd;
+            overflow:hidden;
+        }
+        .sidebar-avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+        .sidebar-btn{
+            width:48px;
+            height:48px;
+            border-radius:12px;
+            display:flex;
+            align-items:center;
+            justify-content:center;
+            background:#fff;
+            border:1px solid #ddd;
+            overflow:hidden;
+        }
+        .sidebar-btn img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+        .sidebar-btn.active{
+            background:#ffe6b3;
+            border:2px solid #ffb700;
+        }
+        .content-area{
+            flex:1;
+            background:#ffffff;
+            display:flex;
+            flex-direction:column;
+        }
+        .header-title{
+            font-size:26px;
+            font-weight:bold;
+            padding:16px 20px;
+            display:flex;
+            justify-content:space-between;
+            align-items:center;
+        }
+        .search-input{
+            margin:0 20px 16px;
+            height:38px;
+            background:#f3f4f6;
+            border-radius:8px;
+            padding:0 12px;
+            border:none;
+            font-size:15px;
+            color:#888;
+        }
+        .tab-row{
+            display:grid;
+            grid-template-columns: 1fr 1fr 1fr 1fr;
+            padding:0 10px;
+            margin-bottom:12px;
+        }
+        .tab-item{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            gap:6px;
+            font-size:14px;
+            color:#444;
+        }
+        .tab-icon{
+            width:36px;
+            height:36px;
+        }
+        .msg-list{
+            flex:1;
+            overflow-y:auto;
+        }
+        .msg-item{
+            display:flex;
+            padding:12px 20px;
+            gap:12px;
+            border-bottom:1px solid #f2f2f2;
+        }
+        .msg-avatar{
+            width:48px;
+            height:48px;
+            border-radius:50%;
+            overflow:hidden;
+            background:#ddd;
+            flex-shrink:0;
+        }
+        .msg-avatar img{
+            width:100%;
+            height:100%;
+            object-fit:cover;
+        }
+        .msg-info{
+            flex:1;
+        }
+        .msg-name-line{
+            display:flex;
+            justify-content:space-between;
+            margin-bottom:4px;
+        }
+        .msg-name{
+            font-size:16px;
+            color:#222;
+        }
+        .msg-tag{
+            font-size:13px;
+            color:#888;
+            margin-left:6px;
+        }
+        .msg-time{
+            font-size:12px;
+            color:#999;
+        }
+        .msg-desc{
+            font-size:14px;
+            color:#666;
+        }
+        /*底部导航*/
+        .bottom-nav{
+            height:70px;
+            background:#fff;
+            display:grid;
+            grid-template-columns:1fr 1fr 1fr 1fr 1fr;
+            border-top:1px solid #e8e8e8;
+        }
+        .nav-item{
+            display:flex;
+            flex-direction:column;
+            align-items:center;
+            justify-content:center;
+            font-size:12px;
+            color:#777;
+            gap:4px;
+        }
+        .nav-item a {
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none; /* 去除下划线 */
+  color: inherit; /* 继承父元素颜色，active黄色正常显示 */
+}
+        .nav-item.active{
+            color:#ffaa00;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <!-- 顶部状态栏 -->
+        <div class="status-bar">
+            <span>3:14</span>
+            <span></span>
+            <span>58</span>
+        </div>
+        <div class="main-wrap">
+            <!--左侧边栏-->
+            <div class="left-sidebar">
+                <div class="sidebar-avatar">
+                    <!-- 头像图片，自行替换src -->
+                    <img src="f67148554950a9c477c274fb465b1ed.jpg" width="48" height="48">
+                </div>
+                <div class="sidebar-btn active">
+                    <img src="5c3898c3d7d0d244094b958ec510311.jpg" alt="">
+                </div>
+                <div class="sidebar-btn">
+                    <img src="e2a5308834d23e7c79343e271c71928.jpg" alt="">
+                </div>
+                <div class="sidebar-btn">
+                    <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#333" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                    </svg>
+                </div>
+            </div>
+            <!--右侧主内容区-->
+            <div class="content-area">
+                <div class="header-title">
+                    <span>聊天</span>
+                    <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#444" stroke-width="2">
+                        <path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"></path>
+                        <polyline points="17 21 17 13 7 13 7 21"></polyline>
+                        <polyline points="7 3 7 8 15 8"></polyline>
+                    </svg>
+                </div>
+                <input type="text" class="search-input" placeholder="搜索好友">
+                <div class="tab-row">
+                    <div class="tab-item">
+                        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2">
+                            <path d="M21 11.5a8.38 8.38 0 0 1-.9 3.8 8.5 8.5 0 0 1-7.6 4.7 8.38 8.38 0 0 1-3.8-.9L3 21l1.9-5.7a8.38 8.38 0 0 1-.9-3.8 8.5 8.5 0 0 1 4.7-7.6 8.38 8.38 0 0 1 3.8-.9h.5a8.48 8.48 0 0 1 8 8v.5z"></path>
+                        </svg>
+                        <span>评论</span>
+                    </div>
+                    <div class="tab-item">
+                        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2">
+                            <path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"></path>
+                        </svg>
+                        <span>赞</span>
+                    </div>
+                    <div class="tab-item">
+                        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <path d="M12 8v4M12 16h.01"></path>
+                        </svg>
+                        <span>@我的</span>
+                    </div>
+                    <div class="tab-item">
+                        <svg class="tab-icon" viewBox="0 0 24 24" fill="none" stroke="#222" stroke-width="2">
+                            <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="9" cy="7" r="4"></circle>
+                            <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                            <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                        </svg>
+                        <span>好友申请</span>
+                    </div>
+                </div>
+                <div class="msg-list">
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="99a84ac02af6e117e14a5266b0b78b1.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">那抹的思念 <span class="msg-tag">[王者荣耀 05/23]</span></span>
+                                <span class="msg-time">昨天14:27</span>
+                            </div>
+                            <div class="msg-desc">[送玫瑰] 给好盆友送个亲密玫…</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="5ebc59c306ea02239adde63eeb2f920.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">ell <span class="msg-tag">[王者荣耀 昨天22:25]</span></span>
+                                <span class="msg-time">10/10</span>
+                            </div>
+                            <div class="msg-desc">[送玫瑰] 给闺蜜送个亲密玫瑰，与…</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="1.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">长春下暴雨12 <span class="msg-tag">[王者荣耀 10/09]</span></span>
+                                <span class="msg-time">10/04</span>
+                            </div>
+                            <div class="msg-desc">[送玫瑰] 给好盆友送个亲密玫瑰，…</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="7.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">营地小秘书</span>
+                                <span class="msg-time">09/11</span>
+                            </div>
+                            <div class="msg-desc">【王者万象棋】对局打卡赢好礼!</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="2.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">午夜忧郁菜qW <span class="msg-tag">[王者荣耀 14:40]</span></span>
+                                <span class="msg-time">09/01</span>
+                            </div>
+                            <div class="msg-desc">[送玫瑰] 给死党送个浓情玫瑰，开…</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="3.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">djdbfj <span class="msg-tag">[王者荣耀 11:22]</span></span>
+                                <span class="msg-time">08/30</span>
+                            </div>
+                            <div class="msg-desc">此角色在线，切换后他能及时收到…</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="4.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">欣欣哦呵 <span class="msg-tag">[王者荣耀 2024/10]</span></span>
+                                <span class="msg-time">08/24</span>
+                            </div>
+                            <div class="msg-desc">你回沈阳了吗</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="5.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">比彻本 <span class="msg-tag">[王者荣耀 10/07]</span></span>
+                                <span class="msg-time">08/07</span>
+                            </div>
+                            <div class="msg-desc">此角色在线，切换后他能及时收到…</div>
+                        </div>
+                    </div>
+                    <div class="msg-item">
+                        <div class="msg-avatar"><img src="6.jpg" width="48" height="48"></div>
+                        <div class="msg-info">
+                            <div class="msg-name-line">
+                                <span class="msg-name">冥族一 <span class="msg-tag">[王者荣耀 昨天13:19]</span></span>
+                                <span class="msg-time">08/06</span>
+                            </div>
+                            <div class="msg-desc">当前用户非好友，若不想被打扰可…</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!--底部导航栏-->
+
+
+        <div class="bottom-nav">
+            <div class="nav-item">
+                <a href="q.html" ">
+                <span class="iconfont">&#xe602;</span>
+                <span>首页</span>
+                </a>
+            </div>
+            <div class="nav-item active">
+                <a href="index.html" class="nav-item">
+                <span class="iconfont">&#xe600;</span>
+                <span>聊天</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <a href="m.html" class="nav-item">
+                <span class="iconfont">&#xe601;</span>
+                <span>年总</span>
+                </a>
+            </div>
+            <div class="nav-item">
+                <span class="iconfont">&#xe603;</span>
+                <span>游戏</span>
+            </div>
+            <div class="nav-item">
+                <span class="iconfont">&#xe604;</span>
+                <span>我</span>
+            </div>
+        </div>
+</body>
+</html>
