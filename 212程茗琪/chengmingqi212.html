@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<!--
+  作者：程茗琪
+  建立时间：2026-11-04
+  使用大模型：GLM-5.3-Flash
+  功能名称：点击排行页面 1:1 还原（网易新闻风格点击排行列表）
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>点击排行 - 程茗琪 212</title>
+  <style>
+    /* ============ 全局样式 作者：程茗琪 ============ */
+    /* 功能：页面整体重置与白色外框（对应照片一的白色页面边框） */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", "SimHei", sans-serif;
+      background: #fff;
+      border: 6px solid #fff; /* 照片中页面四周为白色边框 */
+      min-height: 100vh;
+      padding: 30px 44px 40px;
+      position: relative;
+    }
+
+    /* 功能：右上角返回首页入口（课程规则要求） */
+    .cmq_back_home {
+      position: absolute;
+      top: 14px;
+      right: 18px;
+      color: #bbb;
+      font-size: 12px;
+      text-decoration: none;
+    }
+    .cmq_back_home:hover { color: #f26522; }
+
+    /* ============ 顶部标题区（图标位置留空由用户放图，文字保持原样） ============ */
+    /* 功能：顶部标题容器，横向布局 */
+    .cmq_header {
+      display: flex;
+      align-items: center;
+      margin-bottom: 26px;
+    }
+    /* 功能：图标图片占位，尺寸与原图标方块一致，用户自行添加图片 */
+    .cmq_header_icon_img {
+      width: 52px;
+      height: 52px;
+      object-fit: contain;
+      margin-right: 18px;
+    }
+    /* 功能：“点击排行”大标题，黑色加粗 */
+    .cmq_header_title {
+      font-size: 42px;
+      font-weight: bold;
+      color: #000;
+      letter-spacing: 2px;
+    }
+
+    /* ============ 选项卡区（对应照片一的连接样式） ============ */
+    /* 功能：选项卡行容器，两个选项卡左右相连各占一半，顶部有一条横贯整行的黑色细线 */
+    .cmq_tab_bar {
+      display: flex;
+      width: 100%;
+      height: 80px;
+      text-align: center;
+      font-size: 22px;
+      margin-bottom: 18px;
+      border-top: 2px solid gray; /* 实时点击和24小时排行上方的黑色线 */
+    }
+    /* 功能：选项卡公共样式，左右相连各占一半，文字垂直居中 */
+    .cmq_tab {
+      flex: 1;
+      line-height: 80px;
+      cursor: pointer;
+    }
+    /* 功能：选中状态的选项卡——整块变成灰色，下方带淡灰色线 */
+    .cmq_tab_active {
+      background: #d8d8d8;
+      color: #555;
+      border-bottom: 3px solid #8b8a8a; /* 选中板块下方的淡灰色线，未选中板块没有 */
+    }
+    /* 功能：未选中状态的选项卡——白底橙字，底部橙色线与 V 形缺口 */
+    .cmq_tab_inactive {
+      position: relative;
+      background: #fff;
+      color: #f26522;
+      font-weight: bold;
+      border-bottom: 3px solid #f26522;
+    }
+    /* 功能：未选中板块底线中央向下悬挂的 V 形缺口（旋转 45° 方框的底、右两边） */
+    .cmq_tab_inactive::after {
+      content: "";
+      position: absolute;
+      left: 50%;
+      bottom: -6.5px;
+      width: 13px;
+      height: 13px;
+      margin-left: -6.5px;
+      background: #fff;
+      border-bottom: 3px solid #f26522;
+      border-right: 3px solid #f26522;
+      transform: rotate(45deg);
+    }
+
+    /* ============ 排行列表（对应照片一主体） ============ */
+    /* 功能：每一条排行条目的横向布局 */
+    .cmq_rank_list { list-style: none; }
+    .cmq_rank_item {
+      display: flex;
+      align-items: center;
+      padding: 14px 0;
+      font-size: 20px;
+    }
+    /* 功能：普通序号（4~8 名），橙色纯文字 */
+    .cmq_rank_num {
+      width: 72px;
+      color: #f26522;
+      font-size: 22px;
+      font-weight: bold;
+      text-align: center;
+      flex-shrink: 0;
+    }
+    /* 功能：前三名序号，套用照片二的橙色粗边框方块 */
+    .cmq_rank_num_top3 {
+      width: auto;
+      margin: 0 auto;
+      padding: 0 9px;
+      border: 4px solid #f26522;
+      line-height: 30px;
+    }
+    /* 功能：新闻标题，深灰色 */
+    .cmq_rank_text {
+      flex: 1;
+      color: #404040;
+      white-space: nowrap;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      margin-left: 10px;
+    }
+    /* 功能：右侧点击量，浅灰色右对齐 */
+    .cmq_rank_count {
+      width: 110px;
+      color: #999;
+      font-size: 18px;
+      text-align: right;
+      flex-shrink: 0;
+    }
+  </style>
+</head>
+<body>
+  <a class="cmq_back_home" href="index.html">返回首页</a>
+
+  <!-- 顶部标题：图标图片占位（把图标图片放进 img 文件夹命名为 cmq_icon.png，或修改下方 src） + 原标题文字 -->
+  <div class="cmq_header">
+    <img class="cmq_header_icon_img" src="210681.png" alt="点击排行图标">
+    <div class="cmq_header_title">点击排行</div>
+  </div>
+
+  <!-- 选项卡：实时点击 / 24小时排行，点击可切换选中（灰色）状态 -->
+  <div class="cmq_tab_bar">
+    <div class="cmq_tab cmq_tab_active">实时点击</div>
+    <div class="cmq_tab cmq_tab_inactive">24小时排行</div>
+  </div>
+
+  <!-- 排行列表：前三名序号带橙色边框 -->
+  <ul class="cmq_rank_list">
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num"><span class="cmq_rank_num_top3">1</span></span>
+      <span class="cmq_rank_text">灯塔水母：地球上唯一不死生物</span>
+      <span class="cmq_rank_count">356322</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num"><span class="cmq_rank_num_top3">2</span></span>
+      <span class="cmq_rank_text">阿里巴巴全资收购UC 俞永福称U</span>
+      <span class="cmq_rank_count">311246</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num"><span class="cmq_rank_num_top3">3</span></span>
+      <span class="cmq_rank_text">亚马逊惊现三米长巨滑舌鱼用肺</span>
+      <span class="cmq_rank_count">295883</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num">4</span>
+      <span class="cmq_rank_text">奉化男子上山抓野味 遭遇极濒</span>
+      <span class="cmq_rank_count">266061</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num">5</span>
+      <span class="cmq_rank_text">大白鲨深海失踪 或被大型生物</span>
+      <span class="cmq_rank_count">243936</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num">6</span>
+      <span class="cmq_rank_text">南非小犀牛目睹母亲被猎杀不肯</span>
+      <span class="cmq_rank_count">224346</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num">7</span>
+      <span class="cmq_rank_text">余额宝周岁：收益率“过山车”</span>
+      <span class="cmq_rank_count">172694</span>
+    </li>
+    <li class="cmq_rank_item">
+      <span class="cmq_rank_num">8</span>
+      <span class="cmq_rank_text">“尸油入餐桌”纯属无稽之谈</span>
+      <span class="cmq_rank_count">128789</span>
+    </li>
+  </ul>
+
+  <!-- 外部引用 js 文件夹中的选项卡切换脚本 -->
+  <script src="js/cmq_rank_tab.js"></script>
+</body>
+</html>

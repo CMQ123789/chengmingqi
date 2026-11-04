@@ -21,6 +21,19 @@ Static personal course project (高级网页设计/3D 可视化). Plain HTML/CSS
 - Unreferenced legacy exercises exist (`data Type.html` — contains a space —, `js_boj_apply.html`, `obj005.html`, `font/event005.html`, `font/function_apply.html`, `font/JS_obj_fun005.html`). Don't assume every HTML file is part of the catalog.
 - `font/` is mixed: `iconfont.*`, `demo.css`, `demo_index.html` are generated iconfont output (don't hand-edit); the other `font/*.html` files are hand-written JS exercises.
 - New showcase pages follow the `cmq_` naming convention for CSS classes/IDs, JS functions, and `--cmq_*` custom properties.
+- Every newly created HTML file must start with a header comment right after `<!DOCTYPE html>` containing author, creation date, model used, and the feature name, e.g.:
+
+  ```html
+  <!--
+    作者：程茗琪
+    建立时间：2026-11-04
+    使用大模型：GLM-5.3-Flash
+    功能名称：<本页功能，如 图标展示馆 / 移动端底部导航>
+  -->
+  ```
+
+  Update the date when a page is substantially rebuilt; the model field records the model that authored the change.
+- Every JS function gets a comment immediately above it stating its main functionality (one line `// 功能：...` for simple functions, or a `/** 参数/返回值 */` block for functions with non-obvious signatures). Apply this to existing functions when rewriting them, not retroactively to untouched code.
 - `download/` is a stale copy of `css/` plus an empty `demo.css`; nothing references it.
 - Duplicate UI folders: `24002120212--程茗琪/` is the one linked from index (legacy; images are named `%.jpg`, `&.jpg`, `+.jpg`, and Chinese names — `%.jpg` is an invalid URL). `24002120212cmq/` is a near-identical cleaned copy using ASCII image aliases plus extra iconfont files, but nothing links to it. Confirm which is canonical before editing; don't edit both blindly.
 

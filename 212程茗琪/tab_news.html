@@ -1,0 +1,109 @@
+<!DOCTYPE html>
+<!--
+  作者：程茗琪
+  建立时间：2026-11-04
+  使用大模型：GLM-5.3-Flash
+  功能名称：新闻 Tab 选项卡（js/cmq_tab.js 可复用组件）
+-->
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>新闻选项卡 - 程茗琪</title>
+  <style>
+    /* 功能：页面整体配色与布局（暖色系） */
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+    body {
+      font-family: "Microsoft YaHei", sans-serif;
+      background: #fdf6ec;
+      color: #4a3f35;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 48px 16px;
+    }
+    .cmq_back_home {
+      align-self: flex-start;
+      color: #b07a45;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .cmq_back_home:hover { text-decoration: underline; }
+    .cmq_page_title { margin-bottom: 24px; font-size: 26px; color: #8c5a2b; }
+
+    /* 功能：选项卡导航条样式 */
+    .cmq_tab_nav {
+      list-style: none;
+      display: flex;
+      background: #fff;
+      border-radius: 12px 12px 0 0;
+      overflow: hidden;
+      box-shadow: 0 4px 14px rgba(176, 122, 69, 0.15);
+    }
+    .cmq_tab_item {
+      padding: 14px 28px;
+      cursor: pointer;
+      font-size: 16px;
+      transition: background 0.25s, color 0.25s;
+    }
+    .cmq_tab_item:hover { background: #fbe8d3; }
+    .cmq_tab_item.cmq_active {
+      background: #e8956d;
+      color: #fff;
+      font-weight: bold;
+    }
+
+    /* 功能：选项卡内容面板样式（默认隐藏，cmq_active 时显示） */
+    .cmq_tab_panel {
+      display: none;
+      width: 640px;
+      max-width: 100%;
+      background: #fff;
+      border-radius: 0 0 12px 12px;
+      box-shadow: 0 4px 14px rgba(176, 122, 69, 0.15);
+      padding: 20px 26px;
+    }
+    .cmq_tab_panel.cmq_active { display: block; }
+    .cmq_news_item { padding: 12px 0; border-bottom: 1px dashed #eadfce; line-height: 1.7; }
+    .cmq_news_item:last-child { border-bottom: none; }
+    .cmq_news_item em { color: #b07a45; font-style: normal; font-size: 13px; margin-right: 8px; }
+  </style>
+</head>
+<body>
+  <a class="cmq_back_home" href="index.html">← 返回首页</a>
+  <h1 class="cmq_page_title">每日新闻选项卡</h1>
+
+  <div class="cmq_tab_box">
+    <ul class="cmq_tab_nav">
+      <li class="cmq_tab_item cmq_active">国内新闻</li>
+      <li class="cmq_tab_item">省内新闻</li>
+      <li class="cmq_tab_item">国际新闻</li>
+      <li class="cmq_tab_item">最热新闻</li>
+    </ul>
+    <div class="cmq_tab_panel cmq_active">
+      <p class="cmq_news_item"><em>国内</em>全国秋粮收获已过八成，丰收成定局。</p>
+      <p class="cmq_news_item"><em>国内</em>多地推出文旅消费券，激发假日经济活力。</p>
+      <p class="cmq_news_item"><em>国内</em>新一轮轨道交通建设规划获批复。</p>
+    </div>
+    <div class="cmq_tab_panel">
+      <p class="cmq_news_item"><em>省内</em>我省大学生程序设计竞赛圆满落幕。</p>
+      <p class="cmq_news_item"><em>省内</em>省内高速公路服务区完成智慧化改造。</p>
+      <p class="cmq_news_item"><em>省内</em>我省新增三处省级森林公园。</p>
+    </div>
+    <div class="cmq_tab_panel">
+      <p class="cmq_news_item"><em>国际</em>多国代表就气候变化合作达成新共识。</p>
+      <p class="cmq_news_item"><em>国际</em>国际航天大会发布深空探测新计划。</p>
+      <p class="cmq_news_item"><em>国际</em>全球数字经济峰会聚焦人工智能治理。</p>
+    </div>
+    <div class="cmq_tab_panel">
+      <p class="cmq_news_item"><em>最热</em>今日热搜第一：人工智能辅助教学走进课堂。</p>
+      <p class="cmq_news_item"><em>最热</em>短视频平台上线青少年守护模式 3.0。</p>
+      <p class="cmq_news_item"><em>最热</em>国潮文创产品销量创历史新高。</p>
+    </div>
+  </div>
+
+  <!-- 外部引用 js 文件夹中的可复用选项卡脚本 -->
+  <script src="js/cmq_tab.js"></script>
+</body>
+</html>
