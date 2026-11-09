@@ -82,6 +82,14 @@
   .wy-back a{display:inline-block;text-decoration:none;color:#0f2b5b;font-size:14.5px;font-weight:bold;background:#fff;border:1px solid #dbe4ff;border-radius:999px;padding:10px 26px;transition:transform .2s,box-shadow .2s}
   .wy-back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
 
+  /* 任务快速入口（页面底部导航条，命名遵循 cmq_ 前缀规则） */
+  html{scroll-behavior:smooth}
+  .cmq_task_nav{text-align:center;margin-top:10px}
+  .cmq_task_nav .cmq_task_nav_label{display:block;font-size:13.5px;color:#9ca3af;margin-bottom:6px}
+  .cmq_task_nav a{display:inline-block;text-decoration:none;color:#1d5bbf;font-size:14px;font-weight:bold;background:#eef4ff;border:1px solid #c7d8f8;border-radius:999px;padding:10px 22px;margin:4px 5px;transition:transform .2s,box-shadow .2s,background .2s,color .2s}
+  .cmq_task_nav a:hover{transform:translateY(-2px);background:linear-gradient(135deg,#0f2b5b,#1d5bbf);color:#fff;box-shadow:0 8px 18px rgba(15,43,91,.18)}
+  #cmq_task5,#cmq_task6,#cmq_task7{scroll-margin-top:20px}
+
   /* AI 对话记录区（原创样式：橙色编号 + 徽章标签 + 奶油引用框 + 深蓝代码块，命名遵循 cmq_ 前缀规则） */
   .cmq_rec{margin:6px 0 14px}
   .cmq_rec_title{
@@ -268,7 +276,7 @@
   </div>
 
   <!-- 任务 5 · 提示词工程师（AI 协作任务，照片要求原样还原） -->
-  <div class="wy-sec">
+  <div class="wy-sec" id="cmq_task5">
     <div class="wy-sec-head">
       <span class="wy-no">5</span>
       <h2>提示词工程师：让 AI 听懂需求<small>★★ · 本任务不写代码，只写提示词</small></h2>
@@ -341,7 +349,7 @@ new Swiper("#wySw5", {
   </div>
 
   <!-- 任务 6 · creative 仿写（AI 协作任务，照片要求原样还原） -->
-  <div class="wy-sec">
+  <div class="wy-sec" id="cmq_task6">
     <div class="wy-sec-head">
       <span class="wy-no">6</span>
       <h2>creative 仿写：课堂没讲，AI 教你<small>★★★ · Swiper 第 7 种效果 · 自学能力挑战</small></h2>
@@ -384,7 +392,7 @@ new Swiper("#wySw5", {
   </div>
 
   <!-- 任务 7 · 综合创作 + 技术答辩（照片要求原样还原） -->
-  <div class="wy-sec">
+  <div class="wy-sec" id="cmq_task7">
     <div class="wy-sec-head">
       <span class="wy-no">7</span>
       <h2>综合创作 + 技术答辩：超级加分项<small>★★★ · 加一张新藏品 + 一个超纲能力</small></h2>
@@ -430,6 +438,14 @@ cmq_sw4Box.addEventListener('dblclick', function (cmq_e) {
   </div>
 
   <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>
+
+  <!-- 任务快速入口：点击平滑滚动到对应任务板块 -->
+  <div class="cmq_task_nav">
+    <span class="cmq_task_nav_label">🚀 任务快速入口（AI 协作任务）</span>
+    <a href="#cmq_task5">任务 5 · 提示词工程师 ★★</a>
+    <a href="#cmq_task6">任务 6 · creative 仿写 ★★★</a>
+    <a href="#cmq_task7">任务 7 · 综合创作与答辩 ★★★</a>
+  </div>
 
   <footer>Swiper 课堂操作任务 · 大国重器光影展（学生版） · 高级网页设计 · 2026-2027-1</footer>
 </div>
