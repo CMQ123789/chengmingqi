@@ -123,6 +123,10 @@
   .cmq_shot_img.cmq_shot_169{height:240px;object-fit:cover}
 
   footer{text-align:center;margin-top:34px;color:#9ca3af;font-size:13px;line-height:2}
+
+  /* 键盘切换提示条 + 键帽样式（演示七，命名遵循 cmq_ 前缀规则） */
+  .cmq_kb_hint{max-width:760px;margin:0 auto 10px;text-align:center;font-size:13px;color:#374151;background:#f0f4ff;border:1px solid #c7d8f8;border-radius:10px;padding:8px 12px}
+  .cmq_kbd{display:inline-block;min-width:26px;margin:0 4px;padding:2px 8px;border:1px solid #9db6e8;border-bottom-width:3px;border-radius:6px;background:#fff;color:#1d5bbf;font-family:Consolas,monospace;font-weight:bold;box-shadow:0 2px 0 rgba(15,43,91,.12)}
 </style>
 </head>
 <body>
@@ -326,9 +330,9 @@ new Swiper("#wySw5", {
       </div>
       <!-- 验证截图占位：把截图放进 img 文件夹并按下面文件名命名即可自动显示 -->
       <span class="wy-demo-tag">📷 第 1 轮验证截图（img/cmq_shot5_1.png）</span>
-      <img class="cmq_shot_img" src="swiper-imgs/cmq_shot5_1.png" alt="第 1 轮验证截图占位：把截图放进 img 文件夹，命名为 cmq_shot5_1.png">
+      <img class="cmq_shot_img" src="swiper-imgs/cmq_shot5_2.png" alt="第 1 轮验证截图占位：把截图放进 img 文件夹，命名为 cmq_shot5_1.png">
       <span class="wy-demo-tag">📷 第 2 轮验证截图（img/cmq_shot5_2.png）</span>
-      <img class="cmq_shot_img" src="swiper-imgs/cmq_shot5_2.png" alt="第 2 轮验证截图占位：把截图放进 img 文件夹，命名为 cmq_shot5_2.png">
+      <img class="cmq_shot_img" src="swiper-imgs/cmq_shot5_1.png" alt="第 2 轮验证截图占位：把截图放进 img 文件夹，命名为 cmq_shot5_2.png">
       <div class="wy-demo">
         <span class="wy-demo-tag">🎛️ 演示五 · 任务 5 验证台（用 AI 第 2 轮提示词生成的配置跑起来验证）</span>
         <div class="wy-swiper">
@@ -416,15 +420,14 @@ new Swiper("#wySw5", {
         <div class="cmq_rec_quote">在任务四的轮播里加一个 creative 效果按钮，再让照片双击之后放大、再双击还原。注意：效果切换时轮播实例会销毁重建，双击功能不能失效。</div>
 
         <div class="cmq_rec_label">AI 回答（核心代码）</div>
-        <pre class="cmq_rec_code">var cmq_sw4Box = document.getElementById('wySw4');
-cmq_sw4Box.addEventListener('dblclick', function (cmq_e) {
+        <pre class="cmq_rec_code">document.addEventListener('dblclick', function (cmq_e) {
   var cmq_img = cmq_e.target.closest('img');
-  if (cmq_img) cmq_img.classList.toggle('cmq_zoomed');
+  if (cmq_img && cmq_img.closest('.wy-swiper')) cmq_img.classList.toggle('cmq_zoomed');
 });
 // CSS：img.cmq_zoomed { transform: scale(1.9); transition: transform .4s }</pre>
 
         <div class="cmq_rec_label">AI 第一次给的哪里不对，我改了什么</div>
-        <p class="cmq_rec_text">AI 第一次把监听器绑在<b>每一张 img 上</b>——但切效果时实例会 <code>destroy(true, true)</code> 重建，行内样式被清、后续交互容易失效。改成<b>事件委托</b>：监听器只绑在容器 <code>#wySw4</code> 上，靠 <code>e.target.closest('img')</code> 找到照片，重建实例后依然有效。</p>
+        <p class="cmq_rec_text">AI 第一次把监听器绑在<b>每一张 img 上</b>——但切效果时实例会 <code>destroy(true, true)</code> 重建，行内样式被清、后续交互容易失效。改成<b>页面级事件委托</b>：监听器只绑在 <code>document</code> 上，靠 <code>e.target.closest('img')</code> 找到照片，再用 <code>closest('.wy-swiper')</code> 确认双击发生在轮播区域内——这样<b>所有轮播的图片都支持双击放大</b>，实例销毁重建后依然有效。</p>
 
         <div class="cmq_rec_label">新参数的作用</div>
         <p class="cmq_rec_text"><code>dblclick</code> 双击事件；<code>closest('img')</code> 从点击位置向外找最近的照片；<code>classList.toggle('cmq_zoomed')</code> 切换放大状态类；CSS 的 <code>scale(1.9)</code> 负责视觉放大，<code>transition .4s</code> 让缩放有平滑动画。<b>答辩要点</b>：现场把 1.9 改成别的值，放大倍数立刻变化——证明我理解了这条链路。</p>
@@ -432,6 +435,24 @@ cmq_sw4Box.addEventListener('dblclick', function (cmq_e) {
       <!-- 图片占位：AI 生成图按 16:9 模板，放进 img 文件夹并按下面文件名命名即可自动显示 -->
       <span class="wy-demo-tag">🖼️ 第六件藏品 · AI 生成图（16:9 模板，img/cmq_shot7_slide.png）</span>
       <img class="cmq_shot_img cmq_shot_169" src="swiper-imgs/cmq_shot7_slide.png" alt="AI 生成藏品图占位（16:9）：把图片放进 img 文件夹，命名为 cmq_shot7_slide.png">
+      <!-- 演示七：电影选片墙（creative 效果），键盘 ←/→ 可切换 -->
+      <div class="wy-demo">
+        <span class="wy-demo-tag">🎛️ 演示七 · 电影选片墙（creative 效果 · 键盘 ←/→ 切换）</span>
+        <div class="cmq_kb_hint">键盘控制：<span class="cmq_kbd">←</span> 上一张　<span class="cmq_kbd">→</span> 下一张（轮播出现在屏幕里即可按键，不用先点它）</div>
+        <div class="wy-swiper">
+          <div class="swiper" id="wySw7b">
+            <div class="swiper-wrapper">
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="wy-cap"><h3>天宫空间站</h3><p>按键盘 ←/→ 也能翻页</p></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="wy-cap"><h3>复兴号动车组</h3><p>电影选片墙 · 层层叠出景深</p></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>creative 自定义变换效果</p></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>自动播放 · 2.6 秒一张</p></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/fast_1.jpg" alt="中国天眼"><div class="wy-cap"><h3>中国天眼 FAST</h3><p>拖动后自动播放不停止</p></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/cmq_shot7_slide.png" alt="爱达·魔都号"><div class="wy-cap"><h3>爱达·魔都号</h3><p>国产首艘大型邮轮 · 2024 年 1 月首航</p></div></div>
+            </div>
+            <div class="swiper-pagination" id="wyPag7b"></div>
+          </div>
+        </div>
+      </div>
       
       
     </div>
@@ -489,6 +510,33 @@ var wySw3 = new Swiper("#wySw3", {
       },
     });
 
+  // ── 演示七：电影选片墙（creative 效果 + 键盘 ←/→ 切换） ──
+  // 功能：初始化 #wySw7b，沿用任务3的自动播放节奏，creativeEffect 与任务6选片墙参数一致，keyboard 让方向键翻页
+  var wySw7b = new Swiper("#wySw7b", {
+    grabCursor: true,
+    loop: true,
+    speed: 700,
+    autoplay: {
+      delay: 2600,
+      disableOnInteraction: false,
+    },
+    keyboard: {
+      enabled: true,
+      onlyInViewport: true,
+    },
+    pagination: {
+      el: "#wyPag7b",
+      clickable: true,
+    },
+    effect: "creative",
+    creativeEffect: {
+      limitProgress: 2,
+      shadowPerProgress: true,
+      prev: { translate: ["-115%", 0, -260], rotate: [0, 0, -14] },
+      next: { translate: ["115%", 0, 120], rotate: [0, 0, 8] },
+    },
+  });
+
   // ── 任务 4：初始化 #wySw4，循环 + 3.2 秒自动播放 + 圆点 + 初始 effect ──
   // 功能：根据效果名生成演示四轮播的配置（选 creative 时附加 creativeEffect 自定义变换参数）
   function cmq_buildSw4Config(cmq_fx){
@@ -541,13 +589,13 @@ var wySw4 = new Swiper("#wySw4", cmq_buildSw4Config("slide"));
     });
   });
 
-  // ── 任务 7 加分：双击演示四的照片放大，再双击还原 ──
-  // 功能：事件委托绑定在 #wySw4 容器上，销毁重建实例后依然有效
-  var cmq_sw4Box = document.getElementById("wySw4");
-  cmq_sw4Box.addEventListener("dblclick", function(cmq_e){
-    // 功能：找到双击命中的照片，切换放大状态类 cmq_zoomed
+  // ── 任务 7 加分：双击任意轮播的照片放大，再双击还原 ──
+  // 功能：页面级事件委托——监听器只绑在 document 上，靠 closest('img') 找到双击命中的照片；
+  //       所有轮播（演示一~七）无需单独绑定都支持双击放大，实例销毁重建后依然有效
+  document.addEventListener("dblclick", function(cmq_e){
+    // 功能：双击点在轮播内的照片上时，切换放大状态类 cmq_zoomed（非轮播区域的图片不受影响）
     var cmq_img = cmq_e.target.closest("img");
-    if (cmq_img) cmq_img.classList.toggle("cmq_zoomed");
+    if (cmq_img && cmq_img.closest(".wy-swiper")) cmq_img.classList.toggle("cmq_zoomed");
   });
 
   // ── 修复：鼠标滑动失效的根因 ──
