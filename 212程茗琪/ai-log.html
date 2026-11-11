@@ -1,0 +1,274 @@
+<!DOCTYPE html>
+<!-- 作者：程茗琪 | 建立时间：2026-11-11 | 使用大模型：GLM-5.3-Flash | 功能名称：AI 协作过程全记录页（提示词与 AI 回答对话存档） -->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>与 AI 的协作过程全记录 · Swiper 课堂任务 · 程茗琪</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:#f6f8fc;color:#1f2937}
+
+  /* 页面骨架 */
+  .cmq_wrap{max-width:960px;margin:0 auto;padding:40px 20px 60px}
+
+  /* 头部横幅 */
+  .cmq_head{background:linear-gradient(135deg,#0f2b5b,#1d5bbf);border-radius:20px;padding:34px 38px;color:#fff;margin-bottom:16px;box-shadow:0 12px 30px rgba(15,43,91,.3)}
+  .cmq_head .cmq_badge{display:inline-block;padding:5px 14px;border-radius:999px;background:rgba(255,255,255,.14);border:1px solid rgba(255,255,255,.3);font-size:13px;letter-spacing:2px;margin-bottom:14px}
+  .cmq_head h1{font-size:28px;letter-spacing:1px;line-height:1.4}
+  .cmq_head h1 b{color:#ffd166}
+  .cmq_head p{margin-top:12px;font-size:14.5px;color:#d9e3f5;line-height:2}
+  .cmq_head .cmq_stats{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px}
+  .cmq_head .cmq_stats i{font-style:normal;font-size:13px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);padding:6px 14px;border-radius:8px}
+
+  /* 说明框 */
+  .cmq_rule{background:#fffbea;border:1px solid #fde68a;border-radius:16px;padding:16px 22px;margin-bottom:30px;font-size:14px;color:#7c5e10;line-height:2}
+
+  /* 对话章节 */
+  .cmq_sec{background:#fff;border-radius:18px;padding:26px 30px 30px;margin-bottom:26px;border:1px solid #e8ecf5;box-shadow:0 4px 14px rgba(31,41,55,.06);position:relative;overflow:hidden}
+  .cmq_sec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(#0f2b5b,#1d5bbf)}
+  .cmq_sec_head{display:flex;align-items:center;gap:14px;margin-bottom:8px}
+  .cmq_no{flex:none;width:42px;height:42px;border-radius:12px;background:linear-gradient(135deg,#0f2b5b,#1d5bbf);color:#fff;font-size:19px;font-weight:bold;display:flex;align-items:center;justify-content:center}
+  .cmq_sec_head h2{font-size:20px;color:#111827}
+  .cmq_sec_head small{display:block;font-weight:normal;color:#9ca3af;font-size:13px;margin-top:3px}
+  .cmq_sec p.cmq_note{font-size:14px;color:#374151;line-height:2;margin:10px 0 6px}
+  .cmq_sec p.cmq_note b{color:#0f2b5b}
+
+  /* 对话气泡：我的提示词 */
+  .cmq_msg{margin:16px 0}
+  .cmq_msg .cmq_who{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:bold;margin-bottom:8px}
+  .cmq_msg.cmq_user .cmq_who{color:#1d5bbf}
+  .cmq_msg.cmq_ai .cmq_who{color:#0e7a4d}
+  .cmq_bubble{border-radius:14px;padding:14px 18px;font-size:14.5px;line-height:2}
+  .cmq_msg.cmq_user .cmq_bubble{background:linear-gradient(135deg,#e8f0ff,#f0f5ff);border:1px solid #c7d8f8;border-top-left-radius:4px}
+  .cmq_msg.cmq_ai .cmq_bubble{background:#f4faf6;border:1px solid #bfe8cf;border-top-left-radius:4px}
+  .cmq_bubble p{margin:6px 0}
+
+  /* 代码块 */
+  .cmq_code{background:#0f2b5b;color:#bcd0f5;border-radius:12px;padding:14px 18px;margin:10px 0;font-family:Consolas,"Courier New",monospace;font-size:13px;line-height:1.8;overflow-x:auto;white-space:pre}
+  .cmq_code b{color:#ffd166;font-weight:normal}
+
+  /* 需求核对表 */
+  .cmq_check{width:100%;border-collapse:collapse;margin:12px 0;font-size:13.5px}
+  .cmq_check th,.cmq_check td{border:1px solid #dbe4f5;padding:8px 12px;text-align:left;line-height:1.8}
+  .cmq_check th{background:#eef3ff;color:#0f2b5b}
+  .cmq_check td.cmq_bad{color:#b91c1c;font-weight:bold}
+  .cmq_check td.cmq_good{color:#15803d;font-weight:bold}
+
+  /* 结论条 */
+  .cmq_takeaway{background:#f0fdf4;border:1.5px dashed #16a34a;border-radius:12px;padding:12px 18px;margin-top:14px;font-size:13.5px;color:#166534;line-height:2}
+  .cmq_takeaway b{color:#15803d}
+
+  /* 底部链接 */
+  .cmq_back{text-align:center;margin-top:28px}
+  .cmq_back a{display:inline-block;text-decoration:none;color:#0f2b5b;font-size:14.5px;font-weight:bold;background:#fff;border:1px solid #dbe4ff;border-radius:999px;padding:10px 26px;margin:6px;transition:transform .2s,box-shadow .2s}
+  .cmq_back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(15,43,91,.15)}
+
+  footer{text-align:center;margin-top:34px;color:#9ca3af;font-size:13px;line-height:2}
+</style>
+</head>
+<body>
+<div class="cmq_wrap">
+
+  <div class="cmq_head">
+    <span class="cmq_badge">高 职 · 高 级 网 页 设 计 · AI 协 作 过 程 全 记 录</span>
+    <h1>我与 AI 的对话存档 · <b>提示词 &amp; 回答</b></h1>
+    <p>这一页完整保存了完成 Swiper 课堂任务 5 / 6 / 7 过程中，我发给 AI 的<b>每一条提示词原文</b>和 AI 的<b>关键回答</b>。
+    共 <b>6 组对话</b>，覆盖提示词迭代、效果仿写、交互开发与 Bug 排查。</p>
+    <div class="cmq_stats"><i>学生：程茗琪 212</i><i>AI 模型：GLM-5.3-Flash</i><i>记录时间：2026-11-11</i><i>对应页面：swiper-task.html</i></div>
+  </div>
+
+  <div class="cmq_rule">
+    <b>📋 阅读说明：</b><br>
+    ① 蓝色气泡 = 我发出的提示词原话；绿色卡片 = AI 的回答（含核心代码）；<br>
+    ② 每组对话底部的绿色结论条是我消化后的<b>答辩要点</b>；<br>
+    ③ 页面效果可在 <a href="swiper-task.html" style="color:#1d5bbf">swiper-task.html</a> 里亲手验证。
+  </div>
+
+  <!-- 对话 1：任务5 第 1 轮 -->
+  <div class="cmq_sec">
+    <div class="cmq_sec_head">
+      <span class="cmq_no">1</span>
+      <h2>任务 5 · 第 1 轮提示词<small>故意先写一个"模糊版"，看 AI 能答成什么样</small></h2>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的提示词</span>
+      <div class="cmq_bubble">帮我写一个 Swiper 配置，你在给完我答案之后再给我下一轮完整的提示词。</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答（核心代码）</span>
+      <div class="cmq_bubble">
+<pre class="cmq_code">// 通用 Swiper 轮播配置（针对 #wySw5）
+new Swiper("#wySw5", {
+  speed: 500,
+  pagination: { el: ".swiper-pagination" },
+  autoplay: true,
+});</pre>
+      </div>
+    </div>
+    <table class="cmq_check">
+      <tr><th>任务要求</th><th>AI 是否满足</th><th>原因</th></tr>
+      <tr><td>① 无缝循环</td><td class="cmq_bad">✗</td><td>没写 loop</td></tr>
+      <tr><td>② 3.2 秒自动翻页 + 手动后不停止</td><td class="cmq_bad">✗</td><td>只有裸 autoplay，没有 delay 和 disableOnInteraction</td></tr>
+      <tr><td>③ 圆点可点击跳转</td><td class="cmq_bad">✗</td><td>分页器没有 clickable</td></tr>
+      <tr><td>④ 初始效果 cube</td><td class="cmq_bad">✗</td><td>完全没有 effect 参数</td></tr>
+    </table>
+    <div class="cmq_takeaway"><b>答辩要点：</b>不是 AI 笨，是提示词没说清——AI 只能按我给的信息作答。提示词里根本没出现的四个需求，AI 一个都不会给。</div>
+  </div>
+
+  <!-- 对话 2：任务5 第 2 轮 -->
+  <div class="cmq_sec">
+    <div class="cmq_sec_head">
+      <span class="cmq_no">2</span>
+      <h2>任务 5 · 第 2 轮提示词<small>把每条需求写成"参数名 + 期望值"</small></h2>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的提示词</span>
+      <div class="cmq_bubble">帮我写一个 Swiper 轮播配置 new Swiper("#wySw5", {...})，必须同时满足以下 4 条，一条都不能漏：1. 无缝循环（loop: true）；2. 自动翻页每 3.2 秒一张（autoplay.delay: 3200），用户手动拖动之后自动播放不能停止（disableOnInteraction: false）；3. 圆点分页器（el 用自己的 .swiper-pagination）且可以点击跳转（clickable: true）；4. 切换效果用 3D 立方体（effect: "cube"）。写完后请逐条对照说明每一行代码对应哪条要求。</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答（逐条对照）</span>
+      <div class="cmq_bubble">
+<pre class="cmq_code">new Swiper("#wySw5", {
+  loop: true,                    // ← 第 1 条：无缝循环
+  speed: 700,
+  autoplay: {                    // ← 第 2 条：3.2 秒自动翻页
+    delay: 3200,
+    disableOnInteraction: false, // ← 第 2 条：拖动后不停止
+  },
+  keyboard: { enabled: true, onlyInViewport: true },
+  pagination: {
+    el: "#wyPag5",
+    clickable: true,             // ← 第 3 条：圆点可点跳转
+  },
+  effect: "cube",                // ← 第 4 条：3D 立方体
+});</pre>
+        <p>并提示：把这段放进页面、加上 <b>#wySw5</b> 演示骨架后，可以按住拖动、点圆点、观察自动翻页来逐条验证。</p>
+      </div>
+    </div>
+    <div class="cmq_takeaway"><b>验证结论（页面实测）：</b>等待 4 秒 realIndex 自己变化 = 3.2 秒自动翻页 ✓；点圆点跳到对应照片 ✓；容器出现 swiper-cube ✓；四条要求全部通过。</div>
+  </div>
+
+  <!-- 对话 3：任务6 creative -->
+  <div class="cmq_sec">
+    <div class="cmq_sec_head">
+      <span class="cmq_no">3</span>
+      <h2>任务 6 · 仿写第 7 种效果 creative<small>先看懂官方示例，再动手改参数</small></h2>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的提示词</span>
+      <div class="cmq_bubble">我看懂了官方 creative 示例的参数结构，但 transform 里的百分号（translateX: '100%'）我不确定——它是相对谁的 100%？</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答</span>
+      <div class="cmq_bubble"><p>transform 里的百分号是相对 <b>slide 自身</b> 的尺寸：<code>translateX: '100%'</code> 表示往右挪一整张照片自身的宽度，<code>translateY</code> 则相对照片自身高度——和轮播容器的大小无关。这也是官方示例里用 <b>120%、-120%</b> 让相邻照片"刚好完全滑出视野"的原因。</p></div>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的追问</span>
+      <div class="cmq_bubble">那 rotate: '20deg' 写在第三项里，改成 20 会发生什么？</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答</span>
+      <div class="cmq_bubble"><p>第三项是 z 轴旋转角。写 <code>rotate: 20</code>，照片就会绕自己的中心<b>原地旋转 20 度</b>；rotateX / rotateY 则分别绕横轴、竖轴转，制造 3D 透视。把数值改大改小可以直接控制歪斜程度，立即生效。</p></div>
+    </div>
+    <div class="cmq_takeaway"><b>落地结果：</b>我给演示四加了第 7 个按钮「creative 电影选片墙」，上一张缩小左移转 -14 度、下一张放大右移转 8 度，做出层层叠出的景深感。</div>
+  </div>
+
+  <!-- 对话 4：任务7 双击放大 -->
+  <div class="cmq_sec">
+    <div class="cmq_sec_head">
+      <span class="cmq_no">4</span>
+      <h2>任务 7 · 双击放大交互<small>AI 的第一版有隐患，我做了两次升级</small></h2>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的提示词</span>
+      <div class="cmq_bubble">帮我给轮播的照片加双击放大：双击后照片放大 1.9 倍，再双击还原，带过渡动画。</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答（第一版，有问题）</span>
+      <div class="cmq_bubble">
+<pre class="cmq_code">// 给每一张 img 都绑一个监听器（问题方案）
+document.querySelectorAll('.swiper-slide img').forEach(img => {
+  img.addEventListener('dblclick', () => img.classList.toggle('cmq_zoomed'));
+});</pre>
+      </div>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我发现的问题并要求修改</span>
+      <div class="cmq_bubble">任务 4 切换效果时会 destroy(true, true) 重建实例，绑在每张 img 上会不会失效？换一种绑定方式。</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答（升级为页面级事件委托）</span>
+      <div class="cmq_bubble">
+<pre class="cmq_code">document.addEventListener('dblclick', function (cmq_e) {
+  var cmq_img = cmq_e.target.closest('img');
+  if (cmq_img && cmq_img.closest('.wy-swiper')) cmq_img.classList.toggle('cmq_zoomed');
+});
+// CSS：img.cmq_zoomed { transform: scale(1.9); transition: transform .4s }</pre>
+      </div>
+    </div>
+    <div class="cmq_takeaway"><b>答辩要点：</b>监听器只绑在 <b>document</b> 上（事件委托，少绑定、多复用），两层 closest——第一层找到双击命中的照片、第二层确认它在轮播区域内。JS 只负责开关 <b>cmq_zoomed</b> 类，放大倍数由 CSS 的 <b>scale(1.9)</b> 一处集中管理，实例销毁重建后依然有效。</div>
+  </div>
+
+  <!-- 对话 5：竖版轮播 + 键盘 -->
+  <div class="cmq_sec">
+    <div class="cmq_sec_head">
+      <span class="cmq_no">5</span>
+      <h2>任务 7 · 超纲能力 keyboard + 竖版轮播<small>用源码验证"竖向模式下按键会不会变"</small></h2>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的提示词</span>
+      <div class="cmq_bubble">给电影选片墙轮播加键盘切换功能；照片切换方向改成竖着的（上下滑动），分页圆点也换到侧面。</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的回答</span>
+      <div class="cmq_bubble">
+<pre class="cmq_code">var wySw7b = new Swiper("#wySw7b", {
+  direction: "vertical",        // 照片上下切换，圆点自动排到右侧
+  keyboard: { enabled: true, onlyInViewport: true },
+  effect: "creative",
+  creativeEffect: { ... },      // 选片墙层叠参数保持不变
+  loop: true,
+  autoplay: { delay: 2600, disableOnInteraction: false },
+});
+// 竖向轮播必须给容器显式高度，否则会塌陷：
+// .swiper-vertical { height: 290px }</pre>
+        <p>并提醒：<b>竖向模式下键盘模块只响应 ↑/↓</b>（查看了 Swiper 源码 keyboard 模块，←/→ 只在横向方向生效），所以提示文案要从 ←/→ 改成 ↑/↓。</p>
+      </div>
+    </div>
+    <div class="cmq_takeaway"><b>验证结论（浏览器实测）：</b>容器出现 swiper-vertical 类、活动 slide 的 transform 为 translate3d(0, -290px, 0)（垂直位移一整张照片的高度）✓；圆点在轮播右缘竖排 ✓；按 ↓ realIndex 前进、按 ↑ 后退 ✓。</div>
+  </div>
+
+  <!-- 对话 6：拖拽失效排查 -->
+  <div class="cmq_sec">
+    <div class="cmq_sec_head">
+      <span class="cmq_no">6</span>
+      <h2>番外 · 排查"轮播拖不动"<small>顺着浏览器事件流找到真凶</small></h2>
+    </div>
+    <div class="cmq_msg cmq_user">
+      <span class="cmq_who">👤 我（程茗琪）的提示词</span>
+      <div class="cmq_bubble">轮播图按住照片拖不动，松手会弹回原位，帮我找原因并修复。</div>
+    </div>
+    <div class="cmq_msg cmq_ai">
+      <span class="cmq_who">🤖 AI 的排查过程与结论</span>
+      <div class="cmq_bubble">
+        <p>在本地的 swiper-bundle.js 里检索发现：Swiper 11 <b>只监听 pointer 事件</b>（7 处 pointerdown，0 处 mousedown）。按住照片时浏览器会启动<b>原生拖图</b>，触发 <b>pointercancel</b>（库里 5 处监听），Swiper 立刻中断拖拽、弹回原位。</p>
+<pre class="cmq_code">/* 修复一：禁止图片原生拖拽 */
+.wy-swiper .swiper-slide img{ -webkit-user-drag: none; }
+/* 修复二：拦截轮播区域内所有 dragstart 事件 */
+document.querySelector('.wy-swiper').addEventListener('dragstart', e => e.preventDefault());
+/* 顺手加光标提示 */ grabCursor: true</pre>
+      </div>
+    </div>
+    <div class="cmq_takeaway"><b>答辩要点：</b>这个 Bug 让我理解了浏览器事件流的优先级——原生拖拽行为会"掐断"组件库的 pointer 事件链，必须显式禁用才能让组件接管全部交互。</div>
+  </div>
+
+  <div class="cmq_back">
+    <a href="swiper-task.html">← 返回 Swiper 课堂任务</a>
+    <a href="index.html">← 返回课堂实践中心</a>
+  </div>
+
+  <footer>与 AI 的协作过程全记录 · 学生：程茗琪 212 · AI：GLM-5.3-Flash · 高级网页设计 · 2026-2027-1</footer>
+</div>
+</body>
+</html>

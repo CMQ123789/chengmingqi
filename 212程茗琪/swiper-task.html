@@ -127,6 +127,13 @@
   /* 键盘切换提示条 + 键帽样式（演示七，命名遵循 cmq_ 前缀规则） */
   .cmq_kb_hint{max-width:760px;margin:0 auto 10px;text-align:center;font-size:13px;color:#374151;background:#f0f4ff;border:1px solid #c7d8f8;border-radius:10px;padding:8px 12px}
   .cmq_kbd{display:inline-block;min-width:26px;margin:0 4px;padding:2px 8px;border:1px solid #9db6e8;border-bottom-width:3px;border-radius:6px;background:#fff;color:#1d5bbf;font-family:Consolas,monospace;font-weight:bold;box-shadow:0 2px 0 rgba(15,43,91,.12)}
+
+  /* 演示七竖版：竖向轮播容器需要显式高度（每张 slide 290px），分页器由 Swiper 自动排到右侧 */
+  .wy-swiper .swiper.swiper-vertical{height:290px}
+
+  /* 演示七：侧面滚轮式进度分页器（track=底槽，fill=滚动填充，命名遵循 cmq_ 前缀规则） */
+  #wySw7b .swiper-pagination-progressbar{width:6px;height:62%;left:auto;right:12px;top:50%;transform:translateY(-50%);background:rgba(15,43,91,.18);border-radius:99px;overflow:hidden}
+  #wySw7b .swiper-pagination-progressbar-fill{background:linear-gradient(180deg,#1d5bbf,#e8890c);border-radius:99px}
 </style>
 </head>
 <body>
@@ -435,14 +442,14 @@ new Swiper("#wySw5", {
       <!-- 图片占位：AI 生成图按 16:9 模板，放进 img 文件夹并按下面文件名命名即可自动显示 -->
       <span class="wy-demo-tag">🖼️ 第六件藏品 · AI 生成图（16:9 模板，img/cmq_shot7_slide.png）</span>
       <img class="cmq_shot_img cmq_shot_169" src="swiper-imgs/cmq_shot7_slide.png" alt="AI 生成藏品图占位（16:9）：把图片放进 img 文件夹，命名为 cmq_shot7_slide.png">
-      <!-- 演示七：电影选片墙（creative 效果），键盘 ←/→ 可切换 -->
+      <!-- 演示七：电影选片墙（creative 效果），竖向切换，键盘 ↑/↓ 可翻页 -->
       <div class="wy-demo">
-        <span class="wy-demo-tag">🎛️ 演示七 · 电影选片墙（creative 效果 · 键盘 ←/→ 切换）</span>
-        <div class="cmq_kb_hint">键盘控制：<span class="cmq_kbd">←</span> 上一张　<span class="cmq_kbd">→</span> 下一张（轮播出现在屏幕里即可按键，不用先点它）</div>
+        <span class="wy-demo-tag">🎛️ 演示七 · 电影选片墙（creative 效果 · 竖向切换 · 键盘 ↑/↓ 翻页）</span>
+        <div class="cmq_kb_hint">键盘控制（竖版轮播）：<span class="cmq_kbd">↑</span> 上一张　<span class="cmq_kbd">↓</span> 下一张（轮播出现在屏幕里即可按键，不用先点它）</div>
         <div class="wy-swiper">
           <div class="swiper" id="wySw7b">
             <div class="swiper-wrapper">
-              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="wy-cap"><h3>天宫空间站</h3><p>按键盘 ←/→ 也能翻页</p></div></div>
+              <div class="swiper-slide"><img src="swiper-imgs/tiangong_1.jpg" alt="天宫空间站"><div class="wy-cap"><h3>天宫空间站</h3><p>竖版轮播 · 按键盘 ↑/↓ 也能翻页</p></div></div>
               <div class="swiper-slide"><img src="swiper-imgs/fuxing_1.jpg" alt="复兴号动车组"><div class="wy-cap"><h3>复兴号动车组</h3><p>电影选片墙 · 层层叠出景深</p></div></div>
               <div class="swiper-slide"><img src="swiper-imgs/c919_1.jpg" alt="C919大飞机"><div class="wy-cap"><h3>C919 大飞机</h3><p>creative 自定义变换效果</p></div></div>
               <div class="swiper-slide"><img src="swiper-imgs/fendouzhe_1.jpg" alt="奋斗者号"><div class="wy-cap"><h3>奋斗者号</h3><p>自动播放 · 2.6 秒一张</p></div></div>
@@ -458,7 +465,7 @@ new Swiper("#wySw5", {
     </div>
   </div>
 
-  <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a></div>
+  <div class="wy-back"><a href="index.html">← 返回课堂实践中心</a>　<a href="swiper-lesson.html">查看教师讲解版 →</a>　<a href="ai-log.html">📄 与 AI 的协作过程全记录 →</a></div>
 
   <!-- 任务快速入口：点击平滑滚动到对应任务板块 -->
   <div class="cmq_task_nav">
@@ -510,12 +517,14 @@ var wySw3 = new Swiper("#wySw3", {
       },
     });
 
-  // ── 演示七：电影选片墙（creative 效果 + 键盘 ←/→ 切换） ──
-  // 功能：初始化 #wySw7b，沿用任务3的自动播放节奏，creativeEffect 与任务6选片墙参数一致，keyboard 让方向键翻页
+  // ── 演示七：电影选片墙（creative 效果 + 竖向切换 + 键盘 ↑/↓ 切换） ──
+  // 功能：初始化 #wySw7b，direction:"vertical" 让照片上下切换、分页器用 type:"progressbar" 做成侧面滚轮式进度条；
+  //       creativeEffect 保持选片墙层叠，keyboard 模块在竖向模式下响应 ↑/↓ 方向键
   var wySw7b = new Swiper("#wySw7b", {
     grabCursor: true,
     loop: true,
     speed: 700,
+    direction: "vertical",
     autoplay: {
       delay: 2600,
       disableOnInteraction: false,
@@ -526,7 +535,7 @@ var wySw3 = new Swiper("#wySw3", {
     },
     pagination: {
       el: "#wyPag7b",
-      clickable: true,
+      type: "progressbar",
     },
     effect: "creative",
     creativeEffect: {
