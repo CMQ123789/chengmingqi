@@ -475,4 +475,11 @@
 
 > 视频位置反了换一下（对调 img 里两个视频文件名）；现在重新上传github并给链接——提交 mobile-gesture.html 视频位改动 + img/cmq_video3.mp4、img/cmq_video4.mp4 两个演示视频
 
+## 2026-11-18（续12）
+
+- **使用模型**：GLM-5.3-Flash
+- **提示词内容**：
+
+> 手机上看视频卡顿、加载慢；短链接打开又说没视频——排查结论：手机缓存了旧版页面 + GitHub Pages 国内访问慢。修复：① mobile.html 跳转目标加 ?v=2 穿透缓存；② 两个视频源换成 jsDelivr CDN（cdn.jsdelivr.net/gh/CMQ123789/chengmingqi@master/...，国内快），JS 加 error 回退——CDN 失败自动切回本地 img 路径再试，两次都失败才显示占位提示
+
 ---

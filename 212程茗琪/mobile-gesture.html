@@ -300,7 +300,7 @@
     <!-- 真机演示视频：把视频命名为 cmq_video3.mp4 放进 img 文件夹即自动显示 -->
     <div class="cmq_video_wrap">
       <h5>📹 真机演示视频（双指缩放 · 双击放大 · 拖动）</h5>
-      <video class="cmq_video" controls playsinline preload="metadata" src="img/cmq_video3.mp4"></video>
+      <video class="cmq_video" controls playsinline preload="metadata" src="https://cdn.jsdelivr.net/gh/CMQ123789/chengmingqi@master/212%E7%A8%8B%E8%8C%97%E7%90%AA/img/cmq_video3.mp4" data-cmq-local="img/cmq_video3.mp4"></video>
       <div class="cmq_video_tip">📹 视频占位：把录好的视频命名为 <b>cmq_video3.mp4</b>，放进 <b>img</b> 文件夹，刷新本页即可自动显示</div>
     </div>
   </section>
@@ -355,7 +355,7 @@
     <!-- 真机演示视频：把视频命名为 cmq_video4.mp4 放进 img 文件夹即自动显示 -->
     <div class="cmq_video_wrap">
       <h5>📹 真机演示视频（摇一摇抽菜谱）</h5>
-      <video class="cmq_video" controls playsinline preload="metadata" src="img/cmq_video4.mp4"></video>
+      <video class="cmq_video" controls playsinline preload="metadata" src="https://cdn.jsdelivr.net/gh/CMQ123789/chengmingqi@master/212%E7%A8%8B%E8%8C%97%E7%90%AA/img/cmq_video4.mp4" data-cmq-local="img/cmq_video4.mp4"></video>
       <div class="cmq_video_tip">📹 视频占位：把录好的视频命名为 <b>cmq_video4.mp4</b>，放进 <b>img</b> 文件夹，刷新本页即可自动显示</div>
     </div>
   </section>
@@ -750,6 +750,12 @@
       if (cmq_vtip) cmq_vtip.style.display = 'none';
     });
     cmq_v.addEventListener('error', function(){
+      // 功能：jsDelivr CDN 加载失败时自动回退到本地 img 路径再试一次，两次都失败才显示占位提示
+      if (cmq_v.dataset.cmq_fallback !== '1') {
+        cmq_v.dataset.cmq_fallback = '1';
+        cmq_v.src = cmq_v.getAttribute('data-cmq-local');
+        return;
+      }
       cmq_v.style.display = 'none';
       if (cmq_vtip) cmq_vtip.style.display = 'block';
     });
