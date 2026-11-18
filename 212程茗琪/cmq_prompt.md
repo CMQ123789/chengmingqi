@@ -454,4 +454,11 @@
 
 > 给我链接，并且更新index代码：把 mobile-gesture.html 加入首页课堂目录卡片（编号 12 / MOBILE），后续模块卡顺延为 13，计数改为"已完成 12 个页面"，然后提交 GitHub 生成在线链接
 
+## 2026-11-18（续9）
+
+- **使用模型**：GLM-5.3-Flash
+- **提示词内容**：
+
+> 能给我手机上也能打开的链接吗，刚才打开是404——链接实测 200 正常，404 是长中文路径在手机上被改坏。解决：在仓库根目录新建短链接跳转页 mobile.html（meta refresh 跳转到 /212程茗琪/mobile-gesture.html，附返回首页入口），推送后用短链接 https://cmq123789.github.io/chengmingqi/mobile.html 访问
+
 ---
