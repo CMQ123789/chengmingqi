@@ -461,4 +461,18 @@
 
 > 能给我手机上也能打开的链接吗，刚才打开是404——链接实测 200 正常，404 是长中文路径在手机上被改坏。解决：在仓库根目录新建短链接跳转页 mobile.html（meta refresh 跳转到 /212程茗琪/mobile-gesture.html，附返回首页入口），推送后用短链接 https://cmq123789.github.io/chengmingqi/mobile.html 访问
 
+## 2026-11-18（续10）
+
+- **使用模型**：GLM-5.3-Flash
+- **提示词内容**：
+
+> 现在要在任务三和任务四的地方插进去两个视频——采用与 swiper-task 截图位相同的"占位自动显示"方案：任务三/任务四各加一个视频区（<video controls> 指向 img/cmq_video3.mp4、img/cmq_video4.mp4），JS 监听 error/loadeddata——文件没放时显示占位提示，放进 img 文件夹后自动播放
+
+## 2026-11-18（续11）
+
+- **使用模型**：GLM-5.3-Flash
+- **提示词内容**：
+
+> 视频位置反了换一下（对调 img 里两个视频文件名）；现在重新上传github并给链接——提交 mobile-gesture.html 视频位改动 + img/cmq_video3.mp4、img/cmq_video4.mp4 两个演示视频
+
 ---

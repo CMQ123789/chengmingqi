@@ -92,6 +92,12 @@
   .cmq_btns button:disabled{background:#d9c9ae;color:#fffdf6;cursor:not-allowed;box-shadow:none}
   .cmq_sensor_state{margin-top:10px;font-size:12.5px;color:#d9c4a4}
 
+  /* 任务三/四：真机演示视频位（视频文件放进 img 文件夹即自动显示） */
+  .cmq_video_wrap{margin-top:16px}
+  .cmq_video_wrap h5{font-size:14px;color:#43301d;margin-bottom:8px}
+  .cmq_video{width:100%;max-width:420px;display:none;margin:0 auto;border-radius:12px;background:#2b211a;box-shadow:0 8px 20px rgba(120,84,40,.18)}
+  .cmq_video_wrap .cmq_video_tip{max-width:420px;margin:0 auto;text-align:center;font-size:12.5px;color:#b8a793;border:1.5px dashed #e0c69e;border-radius:12px;padding:18px 14px;line-height:1.9;background:#fffdf6}
+
   /* ── 任务一：事件探针区（深色，观察事件触发顺序） ── */
   .cmq_probe{
     margin-top:16px;border-radius:14px;background:#3d2f24;color:#f3e7d6;
@@ -290,6 +296,13 @@
         ④ <b>旋转屏幕不丢状态</b>——resize / orientationchange 时只重新钳制位置，缩放倍数和查看位置原样保留。
       </p>
     </div>
+
+    <!-- 真机演示视频：把视频命名为 cmq_video3.mp4 放进 img 文件夹即自动显示 -->
+    <div class="cmq_video_wrap">
+      <h5>📹 真机演示视频（双指缩放 · 双击放大 · 拖动）</h5>
+      <video class="cmq_video" controls playsinline preload="metadata" src="img/cmq_video3.mp4"></video>
+      <div class="cmq_video_tip">📹 视频占位：把录好的视频命名为 <b>cmq_video3.mp4</b>，放进 <b>img</b> 文件夹，刷新本页即可自动显示</div>
+    </div>
   </section>
 
   <!-- 任务四：摇一摇彩蛋（设备传感器 · 权限 · 降级） -->
@@ -338,6 +351,13 @@
         devicemotion 是"设备能力"事件，不是所有环境都给数据：电脑浏览器没有加速度传感器，事件可能根本不触发，或 <code>accelerationIncludingGravity</code> 一直是 null；iOS 13+ 出于隐私必须由用户点击授权后才允许监听；同一页面在旧安卓、微信内置浏览器上的表现也不一致。如果不做降级，这些环境里按钮不出现、页面一片空白，等于功能"死"了。所以规则是：<b>能力检测 → 有就摇一摇，没有就显示提示 + 给可点的降级按钮</b>——任何设备打开都不报错、不白屏、有得玩。
       </div>
     </details>
+
+    <!-- 真机演示视频：把视频命名为 cmq_video4.mp4 放进 img 文件夹即自动显示 -->
+    <div class="cmq_video_wrap">
+      <h5>📹 真机演示视频（摇一摇抽菜谱）</h5>
+      <video class="cmq_video" controls playsinline preload="metadata" src="img/cmq_video4.mp4"></video>
+      <div class="cmq_video_tip">📹 视频占位：把录好的视频命名为 <b>cmq_video4.mp4</b>，放进 <b>img</b> 文件夹，刷新本页即可自动显示</div>
+    </div>
   </section>
 
   <div class="cmq_back"><a href="index.html">← 返回首页</a></div>
@@ -721,6 +741,19 @@
 
   // 降级按钮：没有传感器/没授权也能抽菜
   cmq_fallbackBtn.addEventListener('click', cmq_drawDish);
+
+  // 功能：任务三/四演示视频——文件已放进 img 时显示播放器并隐藏占位提示；文件缺失时反过来（监听 error）
+  document.querySelectorAll('.cmq_video').forEach(function(cmq_v){
+    var cmq_vtip = cmq_v.nextElementSibling;
+    cmq_v.addEventListener('loadeddata', function(){
+      cmq_v.style.display = 'block';
+      if (cmq_vtip) cmq_vtip.style.display = 'none';
+    });
+    cmq_v.addEventListener('error', function(){
+      cmq_v.style.display = 'none';
+      if (cmq_vtip) cmq_vtip.style.display = 'block';
+    });
+  });
 
   // 启动流程：能力检测 → 分三条路走
   (function cmq_initSensor(){
