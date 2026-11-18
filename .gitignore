@@ -19,3 +19,6 @@ bin-release/
 
 # 本地私密令牌文件，严禁提交到仓库（程茗琪）
 *.local
+
+# node 依赖目录（server.js 零依赖，无需入库）（程茗琪 2026-11-18）
+node_modules/

@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<!--
+  作者：程茗琪
+  建立时间：2026-11-13
+  使用大模型：GLM-5.3-Flash
+  功能名称：诗词图卡页（上图下文 · 数据来自本地 3004 端口 server.js 的 /poems 接口）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>诗词图卡 · 上图下文</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:linear-gradient(160deg,#fff8ef,#fdeef0 60%,#fff8ef);min-height:100vh;color:#3d3229}
+
+  .cmq_wrap{max-width:1060px;margin:0 auto;padding:44px 20px 70px}
+
+  /* 顶部标题区（署名注释见文件头） */
+  .cmq_head{text-align:center;margin-bottom:36px}
+  .cmq_head .cmq_badge{display:inline-block;font-size:12.5px;letter-spacing:3px;color:#a4703d;background:#fff;border:1px solid #ecd3b4;border-radius:999px;padding:6px 18px;margin-bottom:14px}
+  .cmq_head h1{font-size:32px;letter-spacing:2px;color:#43301d}
+  .cmq_head h1 b{color:#e8890c}
+  .cmq_head p{margin-top:10px;font-size:14px;color:#9b8672}
+
+  /* 搜索 + 排序工具栏（新增） */
+  .cmq_toolbar{display:flex;flex-wrap:wrap;gap:12px;justify-content:center;align-items:center;margin-bottom:26px}
+  .cmq_search{position:relative;width:min(360px,100%)}
+  .cmq_search input{width:100%;font-size:14px;color:#43301d;background:#fff;border:1.5px solid #ecd3b4;border-radius:999px;padding:10px 42px 10px 20px;outline:none;transition:border-color .2s,box-shadow .2s;font-family:inherit}
+  .cmq_search input:focus{border-color:#e8890c;box-shadow:0 0 0 3px rgba(232,137,12,.12)}
+  .cmq_search .cmq_clear{position:absolute;right:8px;top:50%;transform:translateY(-50%);border:none;background:#f6ead9;color:#a4703d;width:26px;height:26px;border-radius:50%;cursor:pointer;font-size:13px;line-height:1;display:none}
+  .cmq_search .cmq_clear:hover{background:#f0dfc4}
+  .cmq_sort_btn{font-size:13.5px;font-family:inherit;color:#fff;background:linear-gradient(135deg,#e8890c,#d9741a);border:none;border-radius:999px;padding:10px 22px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+  .cmq_sort_btn:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(217,116,26,.28)}
+  .cmq_sort_btn.cmq_desc{background:linear-gradient(135deg,#43301d,#6b5138)}
+
+  /* 卡片网格 */
+  .cmq_grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:22px}
+  .cmq_card{background:#fff;border-radius:16px;overflow:hidden;box-shadow:0 8px 22px rgba(120,84,40,.12);transition:transform .25s,box-shadow .25s}
+  .cmq_card:hover{transform:translateY(-6px);box-shadow:0 14px 30px rgba(120,84,40,.2)}
+
+  /* 上图 */
+  .cmq_card .cmq_pic{width:100%;height:190px;object-fit:cover;display:block;background:#f3e9dd}
+
+  /* 下文 */
+  .cmq_card .cmq_body{padding:16px 18px 20px}
+  .cmq_card h3{font-size:17px;color:#43301d;letter-spacing:1px;margin-bottom:8px}
+  .cmq_card p{font-size:13.5px;line-height:1.9;color:#7d6a56}
+
+  /* 加载与错误提示 */
+  .cmq_tip{text-align:center;font-size:14.5px;color:#9b8672;padding:50px 0;line-height:2}
+  .cmq_tip b{color:#e8890c}
+
+  /* 返回首页（规则要求：新建页面需有首页入口） */
+  .cmq_back{text-align:center;margin-top:40px}
+  .cmq_back a{display:inline-block;text-decoration:none;color:#43301d;font-size:14px;font-weight:bold;background:#fff;border:1px solid #ecd3b4;border-radius:999px;padding:9px 24px;transition:transform .2s,box-shadow .2s}
+  .cmq_back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(120,84,40,.16)}
+
+  footer{text-align:center;margin-top:30px;color:#b8a793;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="cmq_wrap">
+
+  <div class="cmq_head">
+    <span class="cmq_badge">高 职 · 高 级 网 页 设 计 · 上 图 下 文</span>
+    <h1>诗词图卡 · <b>数据来自本地服务器</b></h1>
+    <p>图片与文字通过 http://localhost:3004/poems 接口获取（db/db.json → poems）</p>
+  </div>
+
+  <!-- 搜索 + 排序工具栏（数据已在本地，过滤排序不重新请求） -->
+  <div class="cmq_toolbar">
+    <div class="cmq_search">
+      <input type="text" id="cmq_keyword" placeholder="输入关键字，按标题或内容筛选诗词…" autocomplete="off">
+      <button class="cmq_clear" id="cmq_clear_btn" title="清空关键字">✕</button>
+    </div>
+    <button class="cmq_sort_btn" id="cmq_sort_btn">按标题长度排序 ↑</button>
+  </div>
+
+  <!-- 卡片容器：JS 动态填充 -->
+  <div class="cmq_grid" id="cmq_grid">
+    <div class="cmq_tip" id="cmq_loading">正在从服务器获取诗词数据…</div>
+  </div>
+
+  <div class="cmq_back"><a href="index.html">← 返回首页</a></div>
+  <footer>诗词图卡 · 上图下文 · 高级网页设计 · 2026-2027-1</footer>
+</div>
+
+<script>
+  // ══════════════════════════════════════════════
+  //  诗词图卡 · 从 3004 端口服务器获取 poems 数据并渲染
+  // ══════════════════════════════════════════════
+
+  // 缓存完整数据（搜索排序都在本地做，不重新请求服务器）
+  var cmq_allPoems = [];
+  // 排序方向状态：0 未排序 → 点击 1 升序 → 再点 2 降序 → 再点回 0
+  var cmq_sortState = 0;
+  var cmq_sortBtn = document.getElementById('cmq_sort_btn');
+
+  // 功能：根据当前关键字和排序状态处理数据，生成"上图下文"卡片列表
+  function cmq_render(){
+    var cmq_grid = document.getElementById('cmq_grid');
+    var cmq_kw = document.getElementById('cmq_keyword').value.trim().toLowerCase();
+
+    // 功能：过滤——标题或内容包含关键字才保留（关键字为空则显示全部）
+    var cmq_list = cmq_allPoems.filter(function(cmq_item){
+      if (!cmq_kw) return true;
+      return cmq_item.title.toLowerCase().indexOf(cmq_kw) !== -1
+          || cmq_item.content.toLowerCase().indexOf(cmq_kw) !== -1;
+    });
+
+    // 功能：排序——按标题字符长度升序/降序
+    if (cmq_sortState === 1) {
+      cmq_list = cmq_list.slice().sort(function(a,b){ return a.title.length - b.title.length; });
+    } else if (cmq_sortState === 2) {
+      cmq_list = cmq_list.slice().sort(function(a,b){ return b.title.length - a.title.length; });
+    }
+
+    // 空结果提示
+    if (cmq_list.length === 0) {
+      cmq_grid.innerHTML = '<div class="cmq_tip">没有匹配「<b>' + cmq_kw + '</b>」的诗词</div>';
+      return;
+    }
+
+    // 功能：把每条诗词数据拼成一张"上图下文"卡片
+    cmq_grid.innerHTML = cmq_list.map(function(cmq_item){
+      return '<div class="cmq_card">'
+           +   '<img class="cmq_pic" src="' + cmq_item.pic + '" alt="' + cmq_item.title + '">'
+           +   '<div class="cmq_body">'
+           +     '<h3>' + cmq_item.title + '</h3>'
+           +     '<p>' + cmq_item.content + '</p>'
+           +   '</div>'
+           + '</div>';
+    }).join('');
+  }
+
+  // 功能：从本地服务器 /poems 接口获取数据，缓存后首次渲染
+  async function cmq_loadPoems(){
+    var cmq_grid = document.getElementById('cmq_grid');
+    try {
+      var cmq_res = await fetch('http://localhost:3004/poems');
+      if (!cmq_res.ok) throw new Error('接口返回状态 ' + cmq_res.status);
+      cmq_allPoems = await cmq_res.json();
+      cmq_render();
+    } catch (cmq_err) {
+      // 功能：服务器未启动或接口异常时给出友好提示
+      cmq_grid.innerHTML = '<div class="cmq_tip"><b>获取数据失败</b><br>'
+        + '请先在 db 文件夹运行 <b>node server.js</b> 启动 3004 端口服务器，<br>'
+        + '再刷新本页面。<br><small>（' + cmq_err.message + '）</small></div>';
+    }
+  }
+
+  // 功能：监听搜索框输入，每敲一个字就实时重新过滤渲染（不请求服务器）
+  document.getElementById('cmq_keyword').addEventListener('input', function(){
+    // 有关键字时显示清空小按钮
+    document.getElementById('cmq_clear_btn').style.display = this.value ? 'block' : 'none';
+    cmq_render();
+  });
+
+  // 功能：清空关键字并恢复全部显示
+  document.getElementById('cmq_clear_btn').addEventListener('click', function(){
+    var cmq_input = document.getElementById('cmq_keyword');
+    cmq_input.value = '';
+    this.style.display = 'none';
+    cmq_render();
+    cmq_input.focus();
+  });
+
+  // 功能：点击按钮循环切换排序状态（不排序 → 标题长度升序 → 降序），按钮文案和颜色跟着变
+  cmq_sortBtn.addEventListener('click', function(){
+    cmq_sortState = (cmq_sortState + 1) % 3;
+    if (cmq_sortState === 1) {
+      this.textContent = '按标题长度排序 ↑（再点变降序）';
+      this.classList.add('cmq_desc');
+    } else if (cmq_sortState === 2) {
+      this.textContent = '按标题长度排序 ↓（再点恢复原序）';
+    } else {
+      this.textContent = '按标题长度排序 ↑';
+      this.classList.remove('cmq_desc');
+    }
+    cmq_render();
+  });
+
+  // 页面加载完成后开始拉取数据
+  cmq_loadPoems();
+</script>
+</body>
+</html>

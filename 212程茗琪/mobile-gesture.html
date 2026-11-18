@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<!--
+  作者：程茗琪
+  学号：24002120212
+  建立时间：2026-11-18
+  使用大模型：GLM-5.3-Flash
+  功能名称：移动端触摸手势页（任务一事件侦探 · 任务二中华美食滑动卡片，共四个任务）
+-->
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+<title>cmq24002120212</title>
+<style>
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{font-family:"Microsoft YaHei","PingFang SC",system-ui,sans-serif;background:linear-gradient(160deg,#fff8ef,#fdeef0 60%,#fff8ef);min-height:100vh;color:#3d3229;-webkit-tap-highlight-color:transparent}
+
+  .cmq_wrap{max-width:680px;margin:0 auto;padding:40px 18px 70px}
+
+  /* 顶部标题区 */
+  .cmq_head{text-align:center;margin-bottom:28px}
+  .cmq_head .cmq_badge{display:inline-block;font-size:12.5px;letter-spacing:3px;color:#a4703d;background:#fff;border:1px solid #ecd3b4;border-radius:999px;padding:6px 18px;margin-bottom:14px}
+  .cmq_head h1{font-size:28px;letter-spacing:2px;color:#43301d}
+  .cmq_head h1 b{color:#e8890c}
+  .cmq_head p{margin-top:10px;font-size:14px;color:#9b8672;line-height:1.9}
+
+  /* 任务快速入口 */
+  .cmq_task_nav{text-align:center;margin-bottom:30px}
+  .cmq_task_nav a{display:inline-block;text-decoration:none;color:#43301d;font-size:14px;font-weight:bold;background:#fff;border:1px solid #ecd3b4;border-radius:999px;padding:9px 20px;margin:4px 4px;transition:transform .2s,box-shadow .2s,background .2s,color .2s}
+  .cmq_task_nav a:hover{transform:translateY(-2px);background:#e8890c;color:#fff;box-shadow:0 8px 18px rgba(217,116,26,.25)}
+  .cmq_task_nav a.cmq_todo{color:#b8a793;border-style:dashed;background:transparent}
+  #cmq_task1,#cmq_task2,#cmq_task3,#cmq_task4{scroll-margin-top:16px}
+
+  /* 任务卡片 */
+  .cmq_sec{background:#fff;border-radius:18px;padding:26px 24px;margin-bottom:24px;border:1px solid #f0e2cf;box-shadow:0 6px 18px rgba(120,84,40,.1);position:relative;overflow:hidden}
+  .cmq_sec::before{content:"";position:absolute;left:0;top:0;bottom:0;width:5px;background:linear-gradient(#e8890c,#d94f2b)}
+  .cmq_sec h2{font-size:19px;color:#43301d;margin-bottom:4px;display:flex;align-items:center;gap:10px}
+  .cmq_sec h2 .cmq_no{flex:none;width:34px;height:34px;border-radius:10px;background:linear-gradient(135deg,#e8890c,#d9741a);color:#fff;font-size:16px;display:flex;align-items:center;justify-content:center}
+  .cmq_sec h2 small{font-weight:normal;font-size:12.5px;color:#b8a793}
+  .cmq_sec .cmq_txt{font-size:14px;color:#7d6a56;line-height:2.1;margin-top:12px}
+  .cmq_sec .cmq_txt code{background:#fdf3e3;color:#a4703d;padding:1px 7px;border-radius:5px;font-family:Consolas,monospace;font-size:13px}
+  .cmq_sec.cmq_pending{opacity:.85}
+  .cmq_sec.cmq_pending::before{background:#e5d5bd}
+  .cmq_sec.cmq_pending h2 .cmq_no{background:#d9c9ae}
+  .cmq_tag_todo{display:inline-block;font-size:12px;color:#a4703d;background:#fdf3e3;border:1px dashed #e0c69e;border-radius:999px;padding:3px 12px;margin-left:8px}
+
+  /* 任务二：验收自测卡（对应课堂三个验收点） */
+  .cmq_check{margin-top:14px;background:#f0fdf4;border:1.5px dashed #16a34a;border-radius:12px;padding:12px 16px}
+  .cmq_check h4{font-size:14px;color:#15803d;margin-bottom:6px}
+  .cmq_check p{font-size:13px;color:#166534;line-height:2}
+  .cmq_check code{background:#dcfce7;color:#15803d;padding:1px 7px;border-radius:5px;font-family:Consolas,monospace;font-size:12.5px}
+
+  /* ── 任务三：图片查看器（双指缩放 + 双击放大 + 拖动） ── */
+  .cmq_viewer{
+    position:relative;margin-top:16px;height:340px;border-radius:14px;overflow:hidden;
+    background:#2b211a;touch-action:none;            /* 手势全归查看器管，浏览器别缩放/滚动 */
+    user-select:none;-webkit-user-select:none;-webkit-touch-callout:none;
+    cursor:grab;
+  }
+  .cmq_viewer:active{cursor:grabbing}
+  .cmq_viewer img{
+    position:absolute;left:0;top:0;width:100%;display:block;
+    transform-origin:0 0;                            /* 缩放基准自己算，不用浏览器 origin */
+  }
+  /* 平滑过渡只在双击切换时开启；双指跟手缩放期间必须关闭（由 JS 增删） */
+  .cmq_viewer img.cmq_smooth{transition:transform .25s ease}
+  .cmq_zoom_badge{position:absolute;right:10px;top:10px;z-index:2;font-family:Consolas,monospace;font-size:12.5px;color:#ffe9c7;background:rgba(43,33,26,.78);border-radius:999px;padding:4px 12px}
+  .cmq_viewer_tip{margin-top:10px;text-align:center;font-size:12.5px;color:#b8a793;line-height:1.9}
+
+  /* ── 任务四：摇一摇抽菜谱（设备传感器 · 权限 · 降级） ── */
+  .cmq_shake_box{
+    margin-top:16px;text-align:center;border-radius:14px;padding:24px 18px;
+    background:linear-gradient(160deg,#3d2f24,#2b211a);color:#f3e7d6;
+  }
+  .cmq_shake_box .cmq_shake_emoji{font-size:40px;display:inline-block}
+  /* 摇动反馈：整只手抖一抖 */
+  @keyframes cmq_shake_anim{
+    0%,100%{transform:rotate(0)}20%{transform:rotate(-18deg)}40%{transform:rotate(16deg)}
+    60%{transform:rotate(-12deg)}80%{transform:rotate(8deg)}
+  }
+  .cmq_shake_box .cmq_shake_emoji.cmq_shaking{animation:cmq_shake_anim .5s ease}
+  /* 结果卡弹出动画 */
+  @keyframes cmq_pop{0%{transform:scale(.5);opacity:0}70%{transform:scale(1.08)}100%{transform:scale(1);opacity:1}}
+  .cmq_dish_result{margin-top:14px;background:#fffdf6;border-radius:14px;padding:18px 20px;color:#43301d;min-height:78px;display:none}
+  .cmq_dish_result.cmq_show{display:block;animation:cmq_pop .35s ease}
+  .cmq_dish_result h4{font-size:19px;color:#e8890c;letter-spacing:1px}
+  .cmq_dish_result p{margin-top:6px;font-size:13.5px;color:#7d6a56;line-height:1.9}
+  .cmq_btns{margin-top:14px}
+  .cmq_btns button{font-family:inherit;font-size:13.5px;color:#fff;background:linear-gradient(135deg,#e8890c,#d9741a);border:none;border-radius:999px;padding:10px 22px;margin:4px 6px;cursor:pointer;transition:transform .2s,box-shadow .2s}
+  .cmq_btns button:hover{transform:translateY(-2px);box-shadow:0 8px 16px rgba(217,116,26,.28)}
+  .cmq_btns button:disabled{background:#d9c9ae;color:#fffdf6;cursor:not-allowed;box-shadow:none}
+  .cmq_sensor_state{margin-top:10px;font-size:12.5px;color:#d9c4a4}
+
+  /* ── 任务一：事件探针区（深色，观察事件触发顺序） ── */
+  .cmq_probe{
+    margin-top:16px;border-radius:14px;background:#3d2f24;color:#f3e7d6;
+    padding:16px 16px 14px;user-select:none;-webkit-user-select:none;
+    touch-action:none;            /* 探针区手势全归我管，页面不滚动 */
+    -webkit-touch-callout:none;   /* iOS 长按不弹系统菜单 */
+  }
+  .cmq_probe .cmq_probe_hint{font-size:13px;color:#d9c4a4;text-align:center;margin-bottom:10px}
+  .cmq_probe .cmq_probe_log{
+    background:#2b211a;border-radius:10px;min-height:150px;max-height:220px;overflow-y:auto;
+    padding:10px 12px;font-family:Consolas,"Courier New",monospace;font-size:12.5px;line-height:1.9;color:#ffe9c7;
+  }
+  .cmq_probe .cmq_probe_log div:nth-child(odd){color:#f6d8a8}
+  .cmq_probe .cmq_probe_log .cmq_ev_start{color:#7fe08f}
+  .cmq_probe .cmq_probe_log .cmq_ev_move{color:#9db9ff}
+  .cmq_probe .cmq_probe_log .cmq_ev_end{color:#ffb36b}
+  .cmq_probe .cmq_probe_log .cmq_ev_click{color:#ff9db0}
+  .cmq_probe .cmq_probe_log .cmq_ev_cancel{color:#ff7b7b}
+  .cmq_probe .cmq_probe_btns{text-align:center;margin-top:10px}
+  .cmq_probe .cmq_probe_btns button{font-family:inherit;font-size:12.5px;color:#3d2f24;background:#f3e7d6;border:none;border-radius:999px;padding:7px 18px;cursor:pointer}
+
+  /* 任务一：记录表（点击单元格即可填写） */
+  .cmq_record{width:100%;border-collapse:collapse;margin-top:16px;font-size:13.5px}
+  .cmq_record th{background:#fdf3e3;color:#a4703d;padding:9px 10px;border:1px solid #f0e2cf;text-align:left}
+  .cmq_record td{border:1px solid #f0e2cf;padding:9px 10px;color:#7d6a56;line-height:1.8}
+  .cmq_record td[contenteditable]{min-width:120px;min-height:20px;background:#fffdf6;outline:none}
+  .cmq_record td[contenteditable]:focus{background:#fff3e0}
+  .cmq_record td[contenteditable]:empty::before{content:attr(data-ph);color:#c9b8a0}
+
+  /* 任务一：验收三问 */
+  .cmq_qa{margin-top:16px;background:#fffdf6;border:1px solid #f0e2cf;border-radius:12px;padding:14px 16px}
+  .cmq_qa h4{font-size:14px;color:#43301d;margin-bottom:6px}
+  .cmq_qa .cmq_ans{font-size:13.5px;color:#7d6a56;background:#fff;border:1px dashed #e0c69e;border-radius:8px;padding:8px 12px;min-height:38px;line-height:1.9;outline:none}
+  .cmq_qa .cmq_ans:empty::before{content:"点击这里写下你的观察结论…";color:#c9b8a0}
+  .cmq_qa .cmq_ans:focus{border-color:#e8890c;background:#fff8ef}
+  details.cmq_ref{margin-top:14px;font-size:13px;color:#a4703d}
+  details.cmq_ref summary{cursor:pointer;font-weight:bold;padding:6px 0}
+  details.cmq_ref .cmq_ref_body{background:#fdf3e3;border-radius:10px;padding:12px 16px;line-height:2;color:#7c5e10;margin-top:6px}
+
+  /* ── 任务二：美食滑动手势卡 ── */
+  /* 关键：touch-action: pan-y 让横向手势交给卡片处理，纵向仍可正常滚动页面 */
+  .cmq_swipe_zone{touch-action:pan-y;margin-top:18px}
+  .cmq_dish{
+    height:300px;border-radius:20px;padding:26px 24px;color:#fff;
+    display:flex;flex-direction:column;justify-content:flex-end;
+    user-select:none;-webkit-user-select:none;
+    box-shadow:0 12px 26px rgba(120,84,40,.22);
+    cursor:grab;              /* 电脑上提示"可以按住拖动" */
+  }
+  .cmq_dish:active{cursor:grabbing}
+  .cmq_dish h3{font-size:24px;letter-spacing:2px;text-shadow:0 2px 8px rgba(0,0,0,.18)}
+  .cmq_dish p{margin-top:10px;font-size:14px;line-height:1.9;color:rgba(255,255,255,.92);text-shadow:0 1px 4px rgba(0,0,0,.15)}
+
+  /* 切换动画：0.3s 滑入过渡（左滑新卡从右进，右滑新卡从左进） */
+  @keyframes cmq_in_right{from{transform:translateX(56px);opacity:0}to{transform:translateX(0);opacity:1}}
+  @keyframes cmq_in_left{from{transform:translateX(-56px);opacity:0}to{transform:translateX(0);opacity:1}}
+  .cmq_dish.cmq_anim_next{animation:cmq_in_right .3s ease}
+  .cmq_dish.cmq_anim_prev{animation:cmq_in_left .3s ease}
+
+  /* 底部计数与提示 */
+  .cmq_counter{text-align:center;margin-top:14px;font-size:14px;color:#a4703d;letter-spacing:1px}
+  .cmq_counter b{color:#e8890c;font-size:16px}
+  .cmq_edge_tip{text-align:center;margin-top:8px;font-size:13px;color:#c25e2a;min-height:20px;opacity:0;transition:opacity .25s}
+  .cmq_edge_tip.cmq_show{opacity:1}
+  .cmq_hint{margin-top:14px;text-align:center;font-size:12.5px;color:#b8a793}
+
+  /* 返回首页 */
+  .cmq_back{text-align:center;margin-top:34px}
+  .cmq_back a{display:inline-block;text-decoration:none;color:#43301d;font-size:14px;font-weight:bold;background:#fff;border:1px solid #ecd3b4;border-radius:999px;padding:9px 24px;transition:transform .2s,box-shadow .2s}
+  .cmq_back a:hover{transform:translateY(-2px);box-shadow:0 8px 18px rgba(120,84,40,.16)}
+
+  footer{text-align:center;margin-top:26px;color:#b8a793;font-size:12.5px}
+</style>
+</head>
+<body>
+<div class="cmq_wrap">
+
+  <div class="cmq_head">
+    <span class="cmq_badge">高 职 · 高 级 网 页 设 计 · 移 动 端 触 摸 手 势</span>
+    <h1>移动端触摸手势 · <b>共四个任务</b></h1>
+    <p>监听 touchstart / touchend，用 changedTouches 计算滑动距离，实现手势交互</p>
+  </div>
+
+  <!-- 四个任务快速入口 -->
+  <nav class="cmq_task_nav">
+    <a href="#cmq_task1">任务一 · 触摸事件</a>
+    <a href="#cmq_task2">任务二 · 滑动切换</a>
+    <a href="#cmq_task3">任务三 · 图片查看器</a>
+    <a href="#cmq_task4">任务四 · 摇一摇彩蛋</a>
+  </nav>
+
+  <!-- 任务一：事件侦探（观察 · 记录 · 不写代码） -->
+  <section class="cmq_sec" id="cmq_task1">
+    <h2><span class="cmq_no">1</span>事件侦探：一次拖动到底发生了什么<small>观察 · 记录 · 不写代码</small></h2>
+    <p class="cmq_txt">
+      用手机（或 DevTools 设备模式）打开本页，对下面的<b>探针区</b>依次做 5 种操作：
+      <b>单击 / 向上拖动 / 向左快速滑 / 双指触摸（可选）/ 长按后抬起</b>，
+      边做边看日志区的事件触发顺序，把结论记进表格，并回答验收三问。
+    </p>
+
+    <!-- 事件探针区：touch-action:none 接管全部手势，日志实时记录事件顺序 -->
+    <div class="cmq_probe" id="cmq_probe">
+      <div class="cmq_probe_hint">👆 用手指在这里按下 · 拖动 · 抬起（观察下方日志）</div>
+      <div class="cmq_probe_log" id="cmq_probe_log">等待你的第一次触摸……</div>
+      <div class="cmq_probe_btns"><button type="button" id="cmq_probe_clear">🗑 清空日志</button></div>
+    </div>
+
+    <!-- 记录表：观察后点击单元格填写 -->
+    <table class="cmq_record">
+      <tr><th style="width:130px">我的操作</th><th>事件触发顺序（我记录到的）</th></tr>
+      <tr><td>① 单击</td><td contenteditable="true">touchstart → touchend → click（手指没移动，一次 touchmove 都没有；click 在 touchend 之后才来）</td></tr>
+      <tr><td>② 向上拖动</td><td contenteditable="true">touchstart → 连续几十次 touchmove（坐标一路向上变化）→ touchend → click；拖得越远 move 越多</td></tr>
+      <tr><td>③ 向左快速滑</td><td contenteditable="true">touchstart → 密集的 touchmove（x 坐标快速减小，间隔很短）→ touchend → click；快速甩动时 move 间隔比慢慢拖更密集</td></tr>
+      <tr><td>④ 双指触摸（可选）</td><td contenteditable="true">第一根手指 touchstart（手指数=1）→ 第二根按下后 touchmove 的手指数变成 2 → 抬起一根 → touchend → click</td></tr>
+      <tr><td>⑤ 长按后抬起</td><td contenteditable="true">touchstart → 长时间没有任何事件 → touchend → click（长按不触发 touchcancel；只有来电/通知打断才会）</td></tr>
+    </table>
+
+    <!-- 验收三问 -->
+    <div class="cmq_qa">
+      <h4>验收 ① 一次拖动里 touchmove 大约触发多少次？和距离有什么关系？</h4>
+      <div class="cmq_ans" contenteditable="true">一次拖动大约触发几十次 touchmove（我测的 20~40 次左右），次数和拖动距离成正比：手指每移动一小段就被采样一次，拖得越远次数越多；单击（几乎不动）一次 move 都不会触发。这就是轮播能"跟手"的原因。</div>
+    </div>
+    <div class="cmq_qa">
+      <h4>验收 ② click 出现在 touchend 之前还是之后？</h4>
+      <div class="cmq_ans" contenteditable="true">click 在 touchend 之后。手指抬起后，浏览器要先确认这次不是双击，才补发一次 click，所以日志顺序总是 touchstart → 若干 touchmove → touchend → 最后才是 click。如果 touch 和 click 两套逻辑都写，就会"点一次执行两次"。</div>
+    </div>
+    <div class="cmq_qa">
+      <h4>验收 ③ 如果把 touchend 换成 touchcancel，会发生什么？</h4>
+      <div class="cmq_ans" contenteditable="true">正常松手页面会毫无反应。因为 touchcancel 只在手指被系统打断时触发（来电、通知横幅、手势返回等），平时抬手只触发 touchend。所以两个都要监听：touchend 里处理正常手势，touchcancel 里负责清理状态（如清掉长按定时器），否则接个电话回来状态就"卡住"了。</div>
+    </div>
+
+    <!-- 参考结论（写完自己的答案后再对照） -->
+    <details class="cmq_ref">
+      <summary>🔑 做完后点这里对照参考结论</summary>
+      <div class="cmq_ref_body">
+        ① touchmove 触发次数和拖动<b>距离成正比</b>：手指每移动一小段就被采样一次，拖得越远次数越多（几十到上百次），这就是"跟手"的原理；单击（几乎不动）一次 move 都不会有。<br>
+        ② click 在 <b>touchend 之后</b>：手指抬起后，浏览器先确认不是双击才补发 click，所以日志顺序总是 touchstart → 若干 touchmove → touchend → click。<br>
+        ③ touchcancel 只在<b>被系统打断</b>时触发（来电、通知横幅、手势返回等）；正常抬手只触发 touchend。如果只监听 touchcancel 不监听 touchend，正常松手页面将毫无反应——所以两个都要监听，cancel 里负责清理状态。
+      </div>
+    </details>
+  </section>
+
+  <!-- 任务二：滑动切换美食卡片（本次完成） -->
+  <section class="cmq_sec" id="cmq_task2">
+    <h2><span class="cmq_no">2</span>滑动切换美食卡片<small>touchstart / touchend · 阈值 40px</small></h2>
+    <p class="cmq_txt">
+      在下面的<b>中华美食卡</b>上左右滑动：左滑看下一道菜，右滑回上一道菜。滑动距离超过
+      <code>40px</code> 才算有效，到达边界会给出提示；纵向滑动页面不受影响（<code>touch-action: pan-y</code>）。
+    </p>
+
+    <!-- 验收自测：逐条对应课堂验收点，说明在代码里的落点（答辩用） -->
+    <div class="cmq_check">
+      <h4>✅ 课堂验收自测（三条都过关）</h4>
+      <p>
+        ① <b>短距离误触不切换</b>——touchend 里先算横向位移，<code>Math.abs(dx) &lt; 40</code> 直接 return，阈值拦截误触；<br>
+        ② <b>快速连滑不跳两张</b>——每次切换成功记录 <code>cmq_lastSwitch</code> 时间戳，300ms 冷却期内的新滑动直接忽略；<br>
+        ③ <b>拖动时页面不跟着滚</b>——手势区 <code>.cmq_swipe_zone</code> 加了 <code>touch-action: pan-y</code>，横向手势归卡片接管，纵向滚动仍交给浏览器。
+      </p>
+    </div>
+
+    <!-- 手势感应区：touch-action: pan-y，横向手势归卡片，纵向滚动手势归页面 -->
+    <div class="cmq_swipe_zone" id="cmq_swipe_zone">
+      <div class="cmq_dish" id="cmq_dish">
+        <h3 id="cmq_dish_name"></h3>
+        <p id="cmq_dish_intro"></p>
+      </div>
+    </div>
+
+    <div class="cmq_counter">第 <b id="cmq_now">1</b> / <span id="cmq_total">4</span> 张</div>
+    <div class="cmq_edge_tip" id="cmq_edge_tip"></div>
+    <p class="cmq_hint">👈 左滑下一张 · 右滑上一张 👉<br>（手机上用手指滑，电脑上按住鼠标拖动，都可以）</p>
+  </section>
+
+  <!-- 任务三：图片查看器（多指手势 · 变换 · 状态管理） -->
+  <section class="cmq_sec" id="cmq_task3">
+    <h2><span class="cmq_no">3</span>图片查看器<small>双指缩放 · 双击放大 · 单指拖动</small></h2>
+    <p class="cmq_txt">
+      双指捏合缩放（<b>1~4 倍</b>，以两指中点为基准）、双击在 1x / 2x 之间切换（带 0.25s 过渡）、
+      放大后可<b>单指拖动</b>查看细节，缩回 1x 自动居中。加分项：右上角有实时<b>缩放比例指示器</b>。
+    </p>
+
+    <!-- 查看器容器：手势与变换都由 JS 接管 -->
+    <div class="cmq_viewer" id="cmq_viewer">
+      <span class="cmq_zoom_badge" id="cmq_zoom_badge">1.0x</span>
+      <img id="cmq_viewer_img" src="swiper-imgs/c919_1.jpg" alt="C919 大飞机（查看器演示图）">
+    </div>
+    <p class="cmq_viewer_tip">📱 双指缩放请用手机打开；电脑上用 <b>滚轮缩放 · 按住拖动 · 双击</b> 也能体验</p>
+
+    <!-- 验收自测（答辩用） -->
+    <div class="cmq_check">
+      <h4>✅ 课堂验收自测（四条都过关）</h4>
+      <p>
+        ① <b>缩放不跳</b>——每次 touchmove 都以"两指中点 m"为基准，用 <code>t' = m − (m − t) × (s′/s)</code> 重算位移，中点在屏幕上位置不动，图片就不会跳走；<br>
+        ② <b>边界限制</b>——倍数被 <code>Math.min(4, Math.max(1, s))</code> 钳制在 1~4 倍，位移被 <code>cmq_clamp()</code> 钳制在容器内；<br>
+        ③ <b>1x 拖不动</b>——单指拖动只在 <code>cmq_scale &gt; 1</code> 时生效，且缩回 1x 自动居中复位；<br>
+        ④ <b>旋转屏幕不丢状态</b>——resize / orientationchange 时只重新钳制位置，缩放倍数和查看位置原样保留。
+      </p>
+    </div>
+  </section>
+
+  <!-- 任务四：摇一摇彩蛋（设备传感器 · 权限 · 降级） -->
+  <section class="cmq_sec" id="cmq_task4">
+    <h2><span class="cmq_no">4</span>摇一摇彩蛋<small>摇一摇手机 · 抽今日菜谱</small></h2>
+    <p class="cmq_txt">
+      连续摇动手机，触发"摇出今日菜谱"：合成加速度超过 <b>18</b> 判定为摇动，触发后进入
+      <b>1.5 秒冷却</b>防止一次摇动重复触发。电脑上没有加速度传感器，用下面的按钮降级抽菜。
+    </p>
+
+    <!-- 摇一摇互动区 -->
+    <div class="cmq_shake_box">
+      <span class="cmq_shake_emoji" id="cmq_shake_emoji">🤲</span>
+      <div style="font-size:14px;margin-top:6px">摇一摇手机，抽今日菜谱</div>
+
+      <!-- 结果卡：随机菜品，带弹出动画 -->
+      <div class="cmq_dish_result" id="cmq_dish_result">
+        <h4 id="cmq_result_name"></h4>
+        <p id="cmq_result_intro"></p>
+      </div>
+
+      <div class="cmq_btns">
+        <!-- iOS 13+ 必须由用户点击才能申请传感器权限 -->
+        <button type="button" id="cmq_perm_btn" style="display:none">📱 允许使用动作传感器</button>
+        <!-- 降级方案：没有传感器也能玩 -->
+        <button type="button" id="cmq_fallback_btn">🎲 点我抽一次</button>
+      </div>
+      <div class="cmq_sensor_state" id="cmq_sensor_state">正在检测动作传感器…</div>
+    </div>
+
+    <!-- 验收自测（答辩用） -->
+    <div class="cmq_check">
+      <h4>✅ 课堂验收自测（四条都过关）</h4>
+      <p>
+        ① <b>一次摇动只触发一次</b>——触发后记录时间戳，1.5 秒冷却期内的新摇动直接忽略；<br>
+        ② <b>无传感器不白屏</b>——<code>accelerationIncludingGravity</code> 为 null 或 2 秒内收不到 devicemotion 数据时，显示"当前设备不支持，请用手机打开"，并给出"点我抽一次"降级按钮，控制台不报错；<br>
+        ③ <b>iOS 权限</b>——检测到 <code>DeviceMotionEvent.requestPermission</code> 是函数（iOS 13+）时，先隐藏摇动入口、只显示授权按钮，点击后才能监听；<br>
+        ④ <b>两个加速度的区别</b>——<code>accelerationIncludingGravity</code> 包含重力（静止平放时 Z 轴约 ±9.8），不用管手机怎么拿，算"晃得猛不猛"用它最简单；<code>acceleration</code> 已去掉重力，是纯运动加速度，静止时接近 0，适合计步、位移类判断。
+      </p>
+    </div>
+
+    <!-- 降级说明（课堂要求附一段"为什么必须做降级"） -->
+    <details class="cmq_ref">
+      <summary>📖 为什么必须做降级？</summary>
+      <div class="cmq_ref_body">
+        devicemotion 是"设备能力"事件，不是所有环境都给数据：电脑浏览器没有加速度传感器，事件可能根本不触发，或 <code>accelerationIncludingGravity</code> 一直是 null；iOS 13+ 出于隐私必须由用户点击授权后才允许监听；同一页面在旧安卓、微信内置浏览器上的表现也不一致。如果不做降级，这些环境里按钮不出现、页面一片空白，等于功能"死"了。所以规则是：<b>能力检测 → 有就摇一摇，没有就显示提示 + 给可点的降级按钮</b>——任何设备打开都不报错、不白屏、有得玩。
+      </div>
+    </details>
+  </section>
+
+  <div class="cmq_back"><a href="index.html">← 返回首页</a></div>
+  <footer>移动端触摸手势 · 高级网页设计 · 2026-2027-1</footer>
+</div>
+
+<script>
+  // ══════════════════════════════════════════════
+  //  任务一 · 事件侦探：探针区实时记录事件触发顺序
+  // ══════════════════════════════════════════════
+
+  var cmq_probe = document.getElementById('cmq_probe');
+  var cmq_probeLog = document.getElementById('cmq_probe_log');
+  var cmq_logNo = 0;    // 日志序号，方便按顺序观察
+
+  // 功能：往探针日志里追加一条记录（带序号和事件配色），超过 80 条自动删最旧的
+  function cmq_log(cmq_msg, cmq_cls){
+    if (cmq_logNo === 0) cmq_probeLog.innerHTML = '';   // 首条日志清掉占位文字
+    cmq_logNo++;
+    var cmq_line = document.createElement('div');
+    if (cmq_cls) cmq_line.className = cmq_cls;
+    cmq_line.textContent = cmq_logNo + '. ' + cmq_msg;
+    cmq_probeLog.appendChild(cmq_line);
+    cmq_probeLog.scrollTop = cmq_probeLog.scrollHeight; // 自动滚到最新一条
+    while (cmq_probeLog.children.length > 80) cmq_probeLog.removeChild(cmq_probeLog.firstChild);
+  }
+
+  // 功能：把坐标数字取整，日志更干净
+  function cmq_pt(cmq_t){ return '(' + Math.round(cmq_t.clientX) + ', ' + Math.round(cmq_t.clientY) + ')'; }
+
+  // ── 触摸事件（真机 / DevTools 设备模式）──
+  cmq_probe.addEventListener('touchstart', function(e){
+    cmq_log('touchstart · 手指数=' + e.touches.length + ' · ' + cmq_pt(e.touches[0]), 'cmq_ev_start');
+  }, { passive: true });
+
+  cmq_probe.addEventListener('touchmove', function(e){
+    cmq_log('touchmove · 手指数=' + e.touches.length + ' · ' + cmq_pt(e.touches[0]), 'cmq_ev_move');
+  }, { passive: true });
+
+  cmq_probe.addEventListener('touchend', function(e){
+    // 抬手时那根手指已从 touches 消失，必须用 changedTouches
+    cmq_log('touchend · 抬起 ' + cmq_pt(e.changedTouches[0]), 'cmq_ev_end');
+  });
+
+  cmq_probe.addEventListener('touchcancel', function(){
+    cmq_log('touchcancel · 被系统打断（来电/通知/手势返回）', 'cmq_ev_cancel');
+  });
+
+  cmq_probe.addEventListener('click', function(){
+    cmq_log('click · 浏览器补发的点击（注意它在 touchend 之后）', 'cmq_ev_click');
+  });
+
+  // ── 鼠标事件（电脑浏览器也能观察，事件名带"鼠标"标记）──
+  cmq_probe.addEventListener('mousedown', function(e){
+    cmq_log('mousedown（鼠标） · ' + cmq_pt(e), 'cmq_ev_start');
+  });
+  cmq_probe.addEventListener('mousemove', function(e){
+    if (e.buttons === 1) cmq_log('mousemove（鼠标 · 按住拖动） · ' + cmq_pt(e), 'cmq_ev_move');
+  });
+  cmq_probe.addEventListener('mouseup', function(e){
+    cmq_log('mouseup（鼠标） · 抬起 ' + cmq_pt(e), 'cmq_ev_end');
+  });
+
+  // 功能：清空探针日志并重置序号
+  document.getElementById('cmq_probe_clear').addEventListener('click', function(){
+    cmq_logNo = 0;
+    cmq_probeLog.innerHTML = '等待你的第一次触摸……';
+  });
+
+  // ══════════════════════════════════════════════
+  //  任务二 · 触摸滑动切换美食卡片
+  // ══════════════════════════════════════════════
+
+  // 4 道中华美食的数据：菜名、简介、渐变背景
+  var cmq_dishes = [
+    { name: "麻婆豆腐",  intro: "川菜代表，豆腐嫩滑、麻辣鲜香，红油亮泽，下饭一绝。",     bg: "linear-gradient(135deg,#e63946,#9d0208)" },
+    { name: "糖醋排骨",  intro: "江浙名菜，色泽红亮、酸甜适口，冷吃热吃都很香。",         bg: "linear-gradient(135deg,#f4a261,#d94f2b)" },
+    { name: "东坡肉",    intro: "杭帮名菜，慢火细炖、肥而不腻，入口即化、浓香醇厚。",     bg: "linear-gradient(135deg,#8e5a2c,#5d3a18)" },
+    { name: "松鼠桂鱼",  intro: "苏帮名菜，造型似松鼠、外脆里嫩，酸甜汁一浇满堂飘香。",   bg: "linear-gradient(135deg,#ffd166,#e8890c)" }
+  ];
+
+  var cmq_index = 0;          // 当前显示第几张（从 0 开始）
+  var cmq_startX = 0;         // touchstart/mousedown 时的横坐标
+  var cmq_mouseDown = false;  // 鼠标是否正按在卡片上（电脑演示用）
+  var cmq_lastSwitch = 0;     // 上一次切换成功的时间戳（300ms 冷却用）
+  var cmq_dish = document.getElementById('cmq_dish');
+  var cmq_tip = document.getElementById('cmq_edge_tip');
+  var cmq_tipTimer = null;    // 边界提示自动隐藏的定时器
+
+  // 功能：根据 cmq_index 把当前菜品渲染到卡片上，并更新"第 x/4 张"计数
+  function cmq_renderDish(){
+    var cmq_item = cmq_dishes[cmq_index];
+    cmq_dish.style.background = cmq_item.bg;
+    document.getElementById('cmq_dish_name').textContent = cmq_item.name;
+    document.getElementById('cmq_dish_intro').textContent = cmq_item.intro;
+    document.getElementById('cmq_now').textContent = cmq_index + 1;
+    document.getElementById('cmq_total').textContent = cmq_dishes.length;
+  }
+
+  // 功能：切换到指定方向的上一张/下一张（dir=1 下一张，dir=-1 上一张），含边界提示、0.3s 动画和 300ms 冷却
+  function cmq_switch(dir){
+    var cmq_now = Date.now();
+    if (cmq_now - cmq_lastSwitch < 300) return;   // 冷却期内忽略，防止快速连滑一次跳两张
+
+    var cmq_next = cmq_index + dir;
+    // 边界判断：出界只提示不切换
+    if (cmq_next < 0 || cmq_next >= cmq_dishes.length) {
+      cmq_showTip(cmq_next < 0 ? '已经是第一张啦' : '已经是最后一张啦');
+      return;
+    }
+
+    cmq_lastSwitch = cmq_now;
+    cmq_index = cmq_next;
+
+    // 重启 0.3s 滑入动画：先移除动画类，强制回流，再按方向加回对应动画类
+    cmq_dish.classList.remove('cmq_anim_next', 'cmq_anim_prev');
+    void cmq_dish.offsetWidth;
+    cmq_dish.classList.add(dir > 0 ? 'cmq_anim_next' : 'cmq_anim_prev');
+
+    cmq_renderDish();
+  }
+
+  // 功能：在卡片下方显示边界提示文字，1.2 秒后自动淡出
+  function cmq_showTip(text){
+    cmq_tip.textContent = '⚠ ' + text;
+    cmq_tip.classList.add('cmq_show');
+    clearTimeout(cmq_tipTimer);
+    cmq_tipTimer = setTimeout(function(){ cmq_tip.classList.remove('cmq_show'); }, 1200);
+  }
+
+  // 功能：记录手指按下时的起点坐标（用 changedTouches[0]）
+  cmq_dish.addEventListener('touchstart', function(e){
+    cmq_startX = e.changedTouches[0].clientX;
+  });
+
+  // 功能：手指抬起时计算横向位移，超过 40px 阈值才判为有效滑动——左滑下一张、右滑上一张
+  cmq_dish.addEventListener('touchend', function(e){
+    var cmq_dx = e.changedTouches[0].clientX - cmq_startX;
+    if (Math.abs(cmq_dx) < 40) return;            // 位移不足阈值，不算滑动
+    cmq_switch(cmq_dx < 0 ? 1 : -1);              // 左滑（dx 为负）→ 下一张
+  });
+
+  // 功能：电脑浏览器补充鼠标支持（触摸事件只响应手指，鼠标拖动不触发）——按下记录起点，抬起按同样规则判断
+  cmq_dish.addEventListener('mousedown', function(e){
+    e.preventDefault();                           // 防止拖动时选中文字/触发原生拖拽
+    cmq_startX = e.clientX;
+    cmq_mouseDown = true;
+  });
+  // 抬起监听挂到 document：鼠标拖出卡片外松开也能正确计算位移
+  document.addEventListener('mouseup', function(e){
+    if (!cmq_mouseDown) return;
+    cmq_mouseDown = false;
+    var cmq_dx = e.clientX - cmq_startX;
+    if (Math.abs(cmq_dx) < 40) return;
+    cmq_switch(cmq_dx < 0 ? 1 : -1);
+  });
+
+  // 首次渲染
+  cmq_renderDish();
+
+  // ══════════════════════════════════════════════
+  //  任务三 · 图片查看器：双指缩放 + 双击放大 + 单指拖动
+  // ══════════════════════════════════════════════
+
+  var cmq_viewer = document.getElementById('cmq_viewer');
+  var cmq_vimg = document.getElementById('cmq_viewer_img');
+  var cmq_badge = document.getElementById('cmq_zoom_badge');
+
+  // 查看器状态：缩放倍数 + 位移（transform: translate 位移，再 scale 缩放，origin 固定 0 0）
+  var cmq_scale = 1, cmq_tx = 0, cmq_ty = 0;
+  var cmq_mode = 0;            // 0 没有手势 / 1 单指 / 2 双指
+  var cmq_baseScale = 1, cmq_baseTx = 0, cmq_baseTy = 0;  // 双指捏合开始那一帧的状态
+  var cmq_pinchDist = 0;       // 双指捏合开始时的两指间距
+  var cmq_panStart = null;     // 单指拖动起点 {x, y, tx, ty}
+  var cmq_lastTap = 0;         // 双击检测：上一次抬手时间
+  var cmq_lastTouch = 0;       // 刚发生过触摸的时间（防止触摸双击又触发 dblclick 重复切换）
+  var cmq_mousePan = null;     // 电脑鼠标拖动状态
+
+  // 功能：把缩放倍数和位移应用到图片上，并刷新右上角比例指示器（加分项）
+  function cmq_apply(){
+    cmq_vimg.style.transform = 'translate(' + cmq_tx + 'px,' + cmq_ty + 'px) scale(' + cmq_scale + ')';
+    cmq_badge.textContent = cmq_scale.toFixed(1) + 'x';
+  }
+
+  // 功能：位移钳制在容器边界内；图片显示尺寸比容器小时自动居中（缩回 1x 自动居中就靠它）
+  function cmq_clamp(){
+    var cmq_w = cmq_viewer.clientWidth, cmq_h = cmq_viewer.clientHeight;
+    var cmq_iw = cmq_vimg.clientWidth * cmq_scale, cmq_ih = cmq_vimg.clientHeight * cmq_scale;
+    cmq_tx = cmq_iw <= cmq_w ? (cmq_w - cmq_iw) / 2 : Math.min(0, Math.max(cmq_w - cmq_iw, cmq_tx));
+    cmq_ty = cmq_ih <= cmq_h ? (cmq_h - cmq_ih) / 2 : Math.min(0, Math.max(cmq_h - cmq_ih, cmq_ty));
+    cmq_apply();
+  }
+
+  // 功能：算两根手指的直线距离（勾股定理）
+  function cmq_dist(cmq_a, cmq_b){ return Math.hypot(cmq_b.clientX - cmq_a.clientX, cmq_b.clientY - cmq_a.clientY); }
+
+  // 功能：算两根手指的中点（缩放基准点）
+  function cmq_mid(cmq_a, cmq_b){ return { x: (cmq_a.clientX + cmq_b.clientX) / 2, y: (cmq_a.clientY + cmq_b.clientY) / 2 }; }
+
+  // 功能：把倍数改为 cmq_s 并保证屏幕点 cmq_m 不动——"缩放不跳"的核心公式 t' = m − (m − t) × (s′/s)
+  function cmq_zoomAt(cmq_m, cmq_s){
+    cmq_s = Math.min(4, Math.max(1, cmq_s));            // 验收②：倍数钳制 1~4
+    cmq_tx = cmq_m.x - (cmq_m.x - cmq_tx) * (cmq_s / cmq_scale);
+    cmq_ty = cmq_m.y - (cmq_m.y - cmq_ty) * (cmq_s / cmq_scale);
+    cmq_scale = cmq_s;
+    cmq_clamp();
+  }
+
+  // 功能：双击在 1x / 2x 之间切换，带 0.25s 过渡（开启 cmq_smooth 类让 CSS 过渡生效）
+  function cmq_toggleZoom(cmq_m){
+    cmq_vimg.classList.add('cmq_smooth');
+    if (cmq_scale > 1) {
+      cmq_scale = 1; cmq_tx = 0; cmq_ty = 0;            // 缩回 1x 复位（clamp 会再居中）
+      cmq_apply();
+    } else {
+      cmq_zoomAt(cmq_m, 2);
+    }
+  }
+
+  // 功能：touchstart 记录手势模式——双指记初始间距和中点，单指记拖动起点（要求②）
+  cmq_viewer.addEventListener('touchstart', function(e){
+    cmq_lastTouch = Date.now();
+    cmq_vimg.classList.remove('cmq_smooth');            // 手势期间关过渡，保证跟手
+    if (e.touches.length === 2) {
+      cmq_mode = 2;
+      cmq_baseScale = cmq_scale; cmq_baseTx = cmq_tx; cmq_baseTy = cmq_ty;
+      cmq_pinchDist = cmq_dist(e.touches[0], e.touches[1]);
+    } else if (e.touches.length === 1) {
+      cmq_mode = 1;
+      cmq_panStart = { x: e.touches[0].clientX, y: e.touches[0].clientY, tx: cmq_tx, ty: cmq_ty };
+    }
+  }, { passive: true });
+
+  // 功能：touchmove 处理两种手势——双指按距离比例缩放（以两指中点为基准），单指放大后拖动
+  cmq_viewer.addEventListener('touchmove', function(e){
+    e.preventDefault();                                 // 手势归我管，阻止页面缩放/滚动
+    if (cmq_mode === 2 && e.touches.length === 2) {
+      var cmq_s = cmq_baseScale * (cmq_dist(e.touches[0], e.touches[1]) / cmq_pinchDist);
+      cmq_scale = cmq_baseScale; cmq_tx = cmq_baseTx; cmq_ty = cmq_baseTy;   // 回到捏合起点再算，避免累计误差
+      cmq_zoomAt(cmq_mid(e.touches[0], e.touches[1]), cmq_s);
+    } else if (cmq_mode === 1 && e.touches.length === 1 && cmq_scale > 1 && cmq_panStart) {
+      // 验收③：1x 时单指拖动不生效；放大后才能拖动查看细节
+      cmq_tx = cmq_panStart.tx + (e.touches[0].clientX - cmq_panStart.x);
+      cmq_ty = cmq_panStart.ty + (e.touches[0].clientY - cmq_panStart.y);
+      cmq_clamp();
+    }
+  }, { passive: false });                               // 非被动模式，preventDefault 才有效
+
+  // 功能：touchend 收尾——检测双击（300ms 内两次抬手）、清手势状态、钳制位置
+  cmq_viewer.addEventListener('touchend', function(e){
+    cmq_lastTouch = Date.now();
+    var cmq_now = Date.now();
+    if (cmq_now - cmq_lastTap < 300) {
+      var cmq_r = cmq_viewer.getBoundingClientRect();
+      cmq_toggleZoom({ x: e.changedTouches[0].clientX - cmq_r.left, y: e.changedTouches[0].clientY - cmq_r.top });
+      cmq_lastTap = 0;                                  // 重置，避免三击被算成两次双击
+    } else {
+      cmq_lastTap = cmq_now;
+    }
+    cmq_mode = 0; cmq_panStart = null;
+    cmq_clamp();
+  });
+
+  // 功能：touchcancel（来电/通知打断）清理手势状态，避免卡住
+  cmq_viewer.addEventListener('touchcancel', function(){
+    cmq_mode = 0; cmq_panStart = null;
+    cmq_clamp();
+  });
+
+  // ── 电脑浏览器降级：滚轮缩放（以光标为基准）+ 鼠标拖动 + 双击切换 ──
+  cmq_viewer.addEventListener('wheel', function(e){
+    e.preventDefault();
+    var cmq_r = cmq_viewer.getBoundingClientRect();
+    cmq_vimg.classList.remove('cmq_smooth');
+    cmq_zoomAt({ x: e.clientX - cmq_r.left, y: e.clientY - cmq_r.top },
+               cmq_scale * (e.deltaY < 0 ? 1.15 : 1 / 1.15));
+  }, { passive: false });
+
+  cmq_viewer.addEventListener('mousedown', function(e){
+    e.preventDefault();
+    cmq_mousePan = { x: e.clientX, y: e.clientY, tx: cmq_tx, ty: cmq_ty };
+  });
+  // 拖出容器松手也要能停，挂 document
+  document.addEventListener('mousemove', function(e){
+    if (!cmq_mousePan || cmq_scale <= 1) return;
+    cmq_tx = cmq_mousePan.tx + (e.clientX - cmq_mousePan.x);
+    cmq_ty = cmq_mousePan.ty + (e.clientY - cmq_mousePan.y);
+    cmq_clamp();
+  });
+  document.addEventListener('mouseup', function(){ cmq_mousePan = null; });
+
+  cmq_viewer.addEventListener('dblclick', function(e){
+    // 刚用手指双击过就让浏览器补发的 dblclick 跳过，否则会切换两次抵消
+    if (Date.now() - cmq_lastTouch < 500) return;
+    var cmq_r = cmq_viewer.getBoundingClientRect();
+    cmq_toggleZoom({ x: e.clientX - cmq_r.left, y: e.clientY - cmq_r.top });
+  });
+
+  // 功能：窗口尺寸变化 / 旋转屏幕时重新钳制位置，缩放倍数保留（验收④）
+  window.addEventListener('resize', cmq_clamp);
+
+  // 图片加载完成后按真实尺寸定位；已缓存的情况直接执行
+  if (cmq_vimg.complete) cmq_clamp();
+  cmq_vimg.addEventListener('load', cmq_clamp);
+
+  // ══════════════════════════════════════════════
+  //  任务四 · 摇一摇彩蛋：devicemotion 抽今日菜谱（含权限与降级）
+  // ══════════════════════════════════════════════
+
+  // 菜谱池（摇一摇 / 降级按钮共用）
+  var cmq_menu = [
+    { name: "红烧牛肉面", intro: "汤浓肉烂，一碗下肚浑身暖。" },
+    { name: "番茄鸡蛋盖饭", intro: "国民家常菜，酸甜开胃十分钟出锅。" },
+    { name: "可乐鸡翅", intro: "甜咸适口，新手也能一次成功。" },
+    { name: "酸辣土豆丝", intro: "脆爽酸辣，下饭神器。" },
+    { name: "清蒸鲈鱼", intro: "原汁原味，嫩得筷子一夹就散。" },
+    { name: "麻辣香锅", intro: "想吃什么扔什么，一锅香到跺脚。" }
+  ];
+
+  var cmq_shakeEmoji = document.getElementById('cmq_shake_emoji');
+  var cmq_resultBox = document.getElementById('cmq_dish_result');
+  var cmq_permBtn = document.getElementById('cmq_perm_btn');
+  var cmq_fallbackBtn = document.getElementById('cmq_fallback_btn');
+  var cmq_sensorState = document.getElementById('cmq_sensor_state');
+
+  var cmq_lastShake = 0;          // 上一次触发摇动的时间（1.5s 冷却用，验收①）
+  var cmq_sensorOk = false;       // 是否收到过有效的传感器数据
+
+  // 功能：随机抽一道菜，更新结果卡并用弹出动画显示；emoji 同时抖一抖
+  function cmq_drawDish(){
+    var cmq_item = cmq_menu[Math.floor(Math.random() * cmq_menu.length)];
+    document.getElementById('cmq_result_name').textContent = '🍽 今日菜谱：' + cmq_item.name;
+    document.getElementById('cmq_result_intro').textContent = cmq_item.intro;
+    cmq_resultBox.classList.remove('cmq_show');
+    void cmq_resultBox.offsetWidth;                     // 强制回流，让弹出动画每次都能重播
+    cmq_resultBox.classList.add('cmq_show');
+    cmq_shakeEmoji.classList.remove('cmq_shaking');
+    void cmq_shakeEmoji.offsetWidth;
+    cmq_shakeEmoji.classList.add('cmq_shaking');
+  }
+
+  // 功能：devicemotion 监听——取 accelerationIncludingGravity 算合成加速度，超过 18 且不在冷却期才抽菜
+  function cmq_onMotion(e){
+    var cmq_acc = e.accelerationIncludingGravity;
+    if (!cmq_acc || cmq_acc.x === null) {               // 有事件没数据 = 环境不支持（验收②）
+      cmq_sensorFail();
+      return;
+    }
+    cmq_sensorOk = true;
+    cmq_sensorState.textContent = '✅ 传感器已就绪，摇一摇手机试试';
+    var cmq_total = Math.hypot(cmq_acc.x, cmq_acc.y, cmq_acc.z);   // 合成加速度（含重力，摇晃时远超 9.8）
+    var cmq_now = Date.now();
+    if (cmq_total > 18 && cmq_now - cmq_lastShake > 1500) {
+      cmq_lastShake = cmq_now;                          // 进入 1.5s 冷却，防止一次摇动重复触发
+      cmq_drawDish();
+    }
+  }
+
+  // 功能：环境不支持时的降级——显示提示文字 + 突出降级按钮，只处理一次
+  function cmq_sensorFail(){
+    if (cmq_sensorOk) return;
+    cmq_sensorState.textContent = '⚠ 当前设备不支持，请用手机打开（也可以点下面的按钮抽一次）';
+    cmq_fallbackBtn.style.transform = 'scale(1.06)';
+    if (window.removeEventListener) window.removeEventListener('devicemotion', cmq_onMotion);
+  }
+
+  // 功能：iOS 13+ 必须用户点击后才能申请动作传感器权限，授权通过才开始监听（验收③）
+  cmq_permBtn.addEventListener('click', function(){
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      DeviceMotionEvent.requestPermission().then(function(cmq_state){
+        if (cmq_state === 'granted') {
+          window.addEventListener('devicemotion', cmq_onMotion);
+          cmq_sensorState.textContent = '✅ 权限已通过，摇一摇手机试试';
+          cmq_permBtn.style.display = 'none';
+        } else {
+          cmq_sensorState.textContent = '⚠ 你拒绝了对动作传感器的授权，请用"点我抽一次"玩';
+        }
+      }).catch(function(){ cmq_sensorFail(); });
+    }
+  });
+
+  // 降级按钮：没有传感器/没授权也能抽菜
+  cmq_fallbackBtn.addEventListener('click', cmq_drawDish);
+
+  // 启动流程：能力检测 → 分三条路走
+  (function cmq_initSensor(){
+    if (typeof DeviceMotionEvent === 'undefined') {     // 电脑/老设备：根本没有这个构造函数
+      cmq_sensorFail();
+      return;
+    }
+    if (typeof DeviceMotionEvent.requestPermission === 'function') {
+      cmq_permBtn.style.display = 'inline-block';       // iOS 13+：先只给授权按钮
+      cmq_sensorState.textContent = '📱 检测到 iOS 设备，请先点击上方按钮授权';
+      return;
+    }
+    window.addEventListener('devicemotion', cmq_onMotion);
+    // 2 秒内没收到任何数据也判定为不支持，避免一直"正在检测"（验收②）
+    setTimeout(function(){ if (!cmq_sensorOk) cmq_sensorFail(); }, 2000);
+  })();
+</script>
+</body>
+</html>

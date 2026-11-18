@@ -1,0 +1,13 @@
+{
+  "name": "cmq-212chengmingqi",
+  "version": "1.0.0",
+  "description": "高级网页设计课程项目（212程茗琪）",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [],
+  "author": "chengmingqi",
+  "license": "ISC",
+  "type": "commonjs"
+}
